@@ -345,12 +345,15 @@ const FIREBASE_CONFIG = {
   appId: "1:782332840534:web:451f027bb06667e427c9f7"
 };
 
-// المستخدمين: اسم المستخدم + كلمة السر + admin (true = يشوف الإعدادات ويعدّل المخدومين)
+// المستخدمين: اسم المستخدم + كلمة السر + admin
+// دلوقتي الكل admin:true (نفس الصلاحيات). لتقييد خادم لاحقاً غيّر له admin إلى false.
 // ملحوظة: أي حد يفتح "View Source" هيشوف القايمة دي. استخدم كلمات سر مش بتستخدمها في أي مكان تاني.
 const USERS = [
-  { user: "nassif team", pass: "CHANGE-ME-1", admin: true  },
-  { user: "khadem1",     pass: "CHANGE-ME-2", admin: false },
-  { user: "khadem2",     pass: "CHANGE-ME-3", admin: false }
+  { user: "Nassif Victor", pass: "Nassif@321", admin: true },
+  { user: "Mira Ehab", pass: "QABDYhSW", admin: true },
+  { user: "Christine Alaa", pass: "JsD32tJq", admin: true },
+  { user: "Demiana Adel", pass: "SRKStPTj", admin: true },
+  { user: "Mario Nabil", pass: "VgU9Kfs6", admin: true }
 ];
 
 /*
@@ -416,8 +419,8 @@ document.querySelectorAll("[data-logo]").forEach(i => i.src = LOGO);
    4) البداية + تسجيل الدخول
    ===================================================================== */
 function findUser(name){
-  const n = String(name||"").trim().toLowerCase();
-  return USERS.find(x => x.user.toLowerCase() === n);
+  const n = String(name||"").trim().replace(/\s+/g," ").toLowerCase();
+  return USERS.find(x => x.user.replace(/\s+/g," ").toLowerCase() === n);
 }
 function showLogin(){
   unsubs.forEach(f => f()); unsubs = []; user = null; isAdmin = false;
