@@ -182,7 +182,7 @@ textarea{min-height:90px;resize:vertical}
 <!-- ===== Setup warning ===== -->
 <div id="setup" class="hidden" style="padding:24px;max-width:520px;margin:auto">
   <div class="panel"><h2>محتاج تحط إعدادات Firebase</h2>
-  <p>افتح الملف وعدّل <b>FIREBASE_CONFIG</b> و <b>ADMIN_EMAILS</b> في أول السكريبت، وبعدها انشره على Netlify.</p></div>
+  <p>افتح الملف وعدّل <b>FIREBASE_CONFIG</b> و <b>USERS</b> في أول السكريبت.</p></div>
 </div>
 
 <!-- ===== Login ===== -->
@@ -192,8 +192,8 @@ textarea{min-height:90px;resize:vertical}
     <h1>مدرسة القديس بولس للكتاب المقدس</h1>
     <p>تسجيل دخول الخدام</p>
     <form id="loginForm">
-      <label class="f" style="text-align:start">الإيميل</label>
-      <input type="email" id="lEmail" autocomplete="username" required>
+      <label class="f" style="text-align:start">اسم المستخدم</label>
+      <input type="text" id="lEmail" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" required>
       <label class="f" style="text-align:start">كلمة السر</label>
       <input type="password" id="lPass" autocomplete="current-password" required>
       <div class="err" id="lErr"></div>
@@ -345,21 +345,22 @@ const FIREBASE_CONFIG = {
   projectId: "st-paul-bible-school",
   appId: "1:782332840534:web:451f027bb06667e427c9f7"
 };
-// الإيميلات اللي ليها صلاحية الأدمن (لازم تكون نفسها في Firestore Rules)
-const ADMIN_EMAILS = ["n.victor@stpaulschool.com"];
+
+// المستخدمين: اسم المستخدم + كلمة السر + admin (true = يشوف الإعدادات ويعدّل المخدومين)
+// ملحوظة: أي حد يفتح "View Source" هيشوف القايمة دي. استخدم كلمات سر مش بتستخدمها في أي مكان تاني.
+const USERS = [
+  { user: "nassif team", pass: "CHANGE-ME-1", admin: true  },
+  { user: "khadem1",     pass: "CHANGE-ME-2", admin: false },
+  { user: "khadem2",     pass: "CHANGE-ME-3", admin: false }
+];
 
 /*
-  Firestore Rules المطلوبة:
+  Firestore Rules المطلوبة (Authentication ← Sign-in method ← فعّل Anonymous):
 
   rules_version = '2';
   service cloud.firestore {
     match /databases/{db}/documents {
-      function signed(){ return request.auth != null; }
-      function admin(){ return signed() && request.auth.token.email in ['admin@example.com']; }
-      match /students/{d}   { allow read: if signed(); allow write: if admin(); }
-      match /settings/{d}   { allow read: if signed(); allow write: if admin(); }
-      match /sessions/{d}   { allow read: if signed(); allow write: if admin(); }
-      match /attendance/{d} { allow read, write: if signed(); }
+      match /{document=**} { allow read, write: if request.auth != null; }
     }
   }
 */
@@ -415,29 +416,48 @@ document.querySelectorAll("[data-logo]").forEach(i => i.src = LOGO);
 /* =====================================================================
    4) البداية + تسجيل الدخول
    ===================================================================== */
+function findUser(name){
+  const n = String(name||"").trim().toLowerCase();
+  return USERS.find(x => x.user.toLowerCase() === n);
+}
+function showLogin(){
+  unsubs.forEach(f => f()); unsubs = []; user = null; isAdmin = false;
+  $("#app").classList.add("hidden"); $("#login").classList.remove("hidden");
+}
+async function enter(u){
+  try{
+    // انتظر استرجاع جلسة Firebase المحفوظة قبل ما تسجل دخول جديد
+    const cur0 = await new Promise(r => { const un = auth.onAuthStateChanged(x => { un(); r(x); }); });
+    if(!cur0) await auth.signInAnonymously();
+  }catch(e){
+    showLogin(); $("#lErr").textContent = "مشكلة في الاتصال بـ Firebase: " + (e.code || e.message); return;
+  }
+  unsubs.forEach(f => f()); unsubs = [];
+  user = {email: u.user}; isAdmin = !!u.admin;
+  $("#login").classList.add("hidden"); $("#app").classList.remove("hidden");
+  $$(".admin-only").forEach(e => e.classList.toggle("hidden", !isAdmin));
+  $("#who").textContent = u.user + (isAdmin ? " — أدمن" : "");
+  startApp();
+}
+
 if(!FIREBASE_CONFIG.apiKey){
   $("#setup").classList.remove("hidden");
 }else{
   firebase.initializeApp(FIREBASE_CONFIG);
   auth = firebase.auth(); db = firebase.firestore();
-  auth.onAuthStateChanged(u => {
-    unsubs.forEach(f => f()); unsubs = [];
-    if(!u){ user = null; $("#app").classList.add("hidden"); $("#login").classList.remove("hidden"); return; }
-    user = u;
-    isAdmin = ADMIN_EMAILS.map(e => e.toLowerCase()).includes((u.email||"").toLowerCase());
-    $("#login").classList.add("hidden"); $("#app").classList.remove("hidden");
-    $$(".admin-only").forEach(e => e.classList.toggle("hidden", !isAdmin));
-    $("#who").textContent = (u.email||"") + (isAdmin ? " — أدمن" : "");
-    startApp();
-  });
+  let saved = null; try{ saved = localStorage.getItem("sp_user"); }catch(e){}
+  const u0 = findUser(saved);
+  if(u0) enter(u0); else showLogin();
 }
 
-$("#loginForm").addEventListener("submit", async e => {
+$("#loginForm").addEventListener("submit", e => {
   e.preventDefault(); $("#lErr").textContent = "";
-  try{ await auth.signInWithEmailAndPassword($("#lEmail").value.trim(), $("#lPass").value); }
-  catch(err){ $("#lErr").textContent = "الإيميل أو كلمة السر غلط"; }
+  const u = findUser($("#lEmail").value);
+  if(!u || u.pass !== $("#lPass").value){ $("#lErr").textContent = "اسم المستخدم أو كلمة السر غلط"; return; }
+  try{ localStorage.setItem("sp_user", u.user); }catch(e){}
+  $("#lPass").value = ""; enter(u);
 });
-$("#logout").onclick = () => { stopScan(); auth.signOut(); };
+$("#logout").onclick = () => { stopScan(); try{ localStorage.removeItem("sp_user"); }catch(e){} showLogin(); };
 
 function startApp(){
   $("#sessDate").value = $("#qDate").value = $("#dDate").value = todayStr();
