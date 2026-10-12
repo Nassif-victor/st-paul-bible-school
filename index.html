@@ -149,6 +149,41 @@ textarea{min-height:90px;resize:vertical}
 .total{display:flex;justify-content:space-between;align-items:center;background:var(--gold-soft);border-radius:12px;padding:10px 14px;margin-bottom:12px;font-weight:700}
 .total b{font-size:26px;color:var(--brown)}
 
+.cntbox{padding-inline-start:24px}
+
+/* ===== Student home ===== */
+.idcard{width:min(100%,290px);margin:8px auto 14px}
+.idarch{border:7px solid var(--brown);border-bottom:0;border-radius:999px 999px 0 0;background:#fff;padding:12px 24px 18px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.idarch img{width:56px;height:56px;border-radius:50%}
+#sQr{width:200px;height:200px}
+#sQr img{display:block;width:200px;height:200px}
+.idbase{background:var(--brown);color:var(--paper);border-radius:0 0 18px 18px;padding:14px 12px;text-align:center}
+.idbase b{display:block;font-size:20px;line-height:1.4}
+.idbase span{display:inline-block;margin-top:6px;background:var(--gold);color:#fff;border-radius:999px;padding:2px 14px;font-weight:700;font-size:14px}
+.idstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(100%,290px);margin:0 auto}
+.idstats>div{background:var(--paper);border:1px solid #e6d6a8;border-radius:14px;padding:10px 4px;text-align:center}
+.idstats b{display:block;font-size:24px;color:var(--brown);line-height:1.2}
+.idstats small{color:var(--muted);font-size:12px}
+.item.me{background:var(--gold-soft);border-radius:12px;padding-inline:8px}
+
+/* ===== Data tab ===== */
+#tab-data{padding-bottom:74px}
+.fab{position:fixed;left:16px;bottom:calc(84px + var(--safe-b));z-index:25;width:58px;height:58px;border-radius:50%;border:0;background:var(--gold);color:#fff;font-size:34px;line-height:1;box-shadow:0 6px 16px rgba(74,44,32,.35);display:grid;place-items:center;padding:0 0 3px}
+.fab:active{transform:scale(.95)}
+.ico{width:42px;height:42px;border-radius:12px;background:var(--brown);display:grid;place-items:center;flex:none}
+.ico svg{width:22px;height:22px;stroke:var(--gold-soft);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+a.mat{display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-decoration:none;color:inherit}
+.dh{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.dh h2{margin:0;flex:1;font-size:18px;color:var(--brown)}
+a.folderbtn{display:flex;align-items:center;gap:12px;background:var(--brown);color:var(--paper);text-decoration:none;border-radius:16px;padding:12px 14px;margin-bottom:12px;border-bottom:4px solid var(--gold)}
+a.folderbtn .ico{background:var(--gold)}
+a.folderbtn .ico svg{stroke:#fff}
+a.folderbtn .t{flex:1;min-width:0}
+a.folderbtn b{display:block;font-size:15px}
+a.folderbtn small{color:var(--gold-soft)}
+.hint{background:var(--gold-soft);border-radius:10px;padding:8px 11px;font-size:13px;line-height:1.6;margin:8px 0 0}
+input.ltr{direction:ltr;text-align:left}
+
 /* ===== Login ===== */
 #login{min-height:100vh;display:grid;place-items:center;padding:20px}
 .logincard{width:min(100%,380px);background:var(--paper);border:1px solid #e6d6a8;border-radius:22px;padding:22px;text-align:center}
@@ -161,7 +196,8 @@ textarea{min-height:90px;resize:vertical}
 #toast{position:fixed;left:50%;bottom:calc(92px + var(--safe-b));transform:translateX(-50%);z-index:60;background:var(--brown);color:var(--paper);padding:11px 18px;border-radius:14px;font-weight:600;font-size:14px;max-width:90%;text-align:center}
 #toast.bad{background:var(--bad)}
 
-/* ===== Print: كروت QR ===== */
+@page{size:A4;margin:10mm}
+/* ===== Print: كروت QR + تقرير PDF ===== */
 #printArea{display:none}
 @media print{
   body{background:#fff!important;padding:0}
@@ -174,6 +210,21 @@ textarea{min-height:90px;resize:vertical}
   .pcard .q img,.pcard .q canvas{width:34mm!important;height:34mm!important}
   .pcard .pn{font-size:18pt;font-weight:900;color:#4a2c20}
   .pcard .pm{font-size:11pt;font-weight:700}
+  #printArea,#printArea *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #printArea.report{display:block!important;padding:0;font-family:'Cairo','Segoe UI',Tahoma,sans-serif;color:#2a1a12}
+  .rh{display:flex;align-items:center;gap:4mm;border-bottom:2px solid #4a2c20;padding-bottom:4mm;margin-bottom:5mm}
+  .rh img{width:20mm;height:20mm;border-radius:50%}
+  .rh h1{margin:0;font-size:17pt;color:#4a2c20}
+  .rh p{margin:1mm 0 0;font-size:11pt}
+  .rh p.sm{font-size:9pt;color:#7a6558}
+  table.rt{width:100%;border-collapse:collapse;font-size:10pt}
+  table.rt th{background:#4a2c20;color:#fff;padding:2mm;border:1px solid #4a2c20;font-weight:700}
+  table.rt td{padding:1.8mm 2mm;border:1px solid #d9c694;text-align:center}
+  table.rt td.nm{text-align:start;font-weight:600}
+  table.rt td.pt{font-weight:900;color:#4a2c20}
+  table.rt tbody tr:nth-child(even){background:#fbf3dc}
+  table.rt thead{display:table-header-group}
+  table.rt tr{break-inside:avoid;page-break-inside:avoid}
 }
 </style>
 </head>
@@ -213,10 +264,11 @@ textarea{min-height:90px;resize:vertical}
   <main>
     <!-- مسح -->
     <section class="tab active" id="tab-scan">
+      <div id="staffHome">
       <div class="panel">
         <div class="grid2">
           <div><label class="f" style="margin-top:0">تاريخ اللقاء</label><input type="date" id="sessDate"></div>
-          <div><label class="f" style="margin-top:0">حاضرين النهارده</label><div id="cnt" style="font-size:30px;font-weight:900;color:var(--brown);line-height:1.25">0</div></div>
+          <div class="cntbox"><label class="f" style="margin-top:0">حاضرين النهارده</label><div id="cnt" style="font-size:30px;font-weight:900;color:var(--brown);line-height:1.25">0</div></div>
         </div>
       </div>
       <div id="prevQ" class="qbox hidden"></div>
@@ -239,9 +291,21 @@ textarea{min-height:90px;resize:vertical}
         </div>
       </div>
 
-      <div class="panel">
-        <h2>اللي حضروا <small id="todayDate"></small></h2>
-        <div id="todayList"></div>
+    </div>
+
+      <div id="studentHome" class="hidden">
+        <div class="idcard">
+          <div class="idarch">
+            <img data-logo alt="">
+            <div id="sQr"></div>
+          </div>
+          <div class="idbase"><b id="sName"></b><span id="sNum"></span></div>
+        </div>
+        <div class="idstats">
+          <div><b id="sRank">-</b><small>الترتيب <span id="sOf"></span></small></div>
+          <div><b id="sPts">0</b><small>النقاط</small></div>
+          <div><b id="sDays">0</b><small>أيام الحضور</small></div>
+        </div>
       </div>
     </section>
 
@@ -256,7 +320,7 @@ textarea{min-height:90px;resize:vertical}
           <button class="btn ghost sm" id="printBtn">طباعة كروت QR</button>
           <button class="btn ghost sm" id="impToggle">استيراد من الشيت</button>
         </div>
-        <div id="impBox" class="hidden admin-only" style="margin-top:10px">
+        <div id="impBox" class="hidden" style="margin-top:10px">
           <p class="muted" style="margin:0 0 6px">انسخ الأعمدة من Google Sheet والصقها هنا: <b>الرقم ثم الاسم ثم الفصل (اختياري)</b>، سطر لكل مخدوم.</p>
           <textarea id="impText" placeholder="101&#9;مينا جورج&#9;الصف الأول"></textarea>
           <button class="btn primary block" id="impGo" style="margin-top:8px">استيراد</button>
@@ -267,7 +331,7 @@ textarea{min-height:90px;resize:vertical}
 
     <!-- التقارير -->
     <section class="tab" id="tab-report">
-      <div class="seg"><button id="segRank" class="on">الترتيب والنقاط</button><button id="segDay">حضور وغياب لقاء</button></div>
+      <div class="seg staff-only"><button id="segRank" class="on">الترتيب والنقاط</button><button id="segDay">حضور وغياب لقاء</button></div>
 
       <div id="rankView">
         <div class="panel">
@@ -275,7 +339,7 @@ textarea{min-height:90px;resize:vertical}
             <div><label class="f" style="margin-top:0">من</label><input type="date" id="rFrom"></div>
             <div><label class="f" style="margin-top:0">إلى</label><input type="date" id="rTo"></div>
           </div>
-          <div class="row" style="margin-top:10px"><button class="btn ghost sm" id="rClear">كل المدة</button><button class="btn ghost sm" id="rCsv">تصدير CSV</button></div>
+          <div class="row" style="margin-top:10px"><button class="btn ghost sm" id="rClear">كل المدة</button><button class="btn ghost sm staff-only" id="rCsv">تصدير CSV</button><button class="btn gold sm staff-only" id="rPdf">تصدير PDF</button></div>
         </div>
         <div class="panel"><h2>الترتيب</h2><div id="rankList"></div></div>
       </div>
@@ -288,6 +352,9 @@ textarea{min-height:90px;resize:vertical}
         <div class="panel"><h2>غابوا <small id="dAbsent"></small></h2><div id="dAbsentList"></div></div>
       </div>
     </section>
+
+    <!-- Data -->
+    <section class="tab" id="tab-data"><div id="dataView"></div></section>
 
     <!-- الإعدادات -->
     <section class="tab" id="tab-settings">
@@ -318,11 +385,13 @@ textarea{min-height:90px;resize:vertical}
   </main>
 
   <nav class="bar">
-    <button data-tab="scan" class="on"><svg viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M4 12h16"/></svg>مسح</button>
+    <button data-tab="scan" class="on"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h4.5v-6h4v6h4.5V10"/></svg>Home</button>
     <button data-tab="students"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16.5 14.2c2.3.2 3.7 1.7 4 4.3"/></svg>المخدومين</button>
-    <button data-tab="report"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>التقارير</button>
-    <button data-tab="settings" class="admin-only"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>الإعدادات</button>
+    <button data-tab="report"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Reports</button>
+    <button data-tab="data"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Data</button>
+    <button data-tab="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</button>
   </nav>
+  <button class="fab hidden" id="fab" aria-label="إضافة">+</button>
 </div>
 
 <div id="sheetBg" class="sheetbg hidden"></div>
@@ -345,15 +414,65 @@ const FIREBASE_CONFIG = {
   appId: "1:782332840534:web:451f027bb06667e427c9f7"
 };
 
-// المستخدمين: اسم المستخدم + كلمة السر + admin
-// دلوقتي الكل admin:true (نفس الصلاحيات). لتقييد خادم لاحقاً غيّر له admin إلى false.
-// ملحوظة: أي حد يفتح "View Source" هيشوف القايمة دي. استخدم كلمات سر مش بتستخدمها في أي مكان تاني.
+// الأدوار: 1=Admin  2=Family Leader  3=Servant  4=Student
+// tabs   = التابات اللي بتظهر للدور ده (scan = Home)
+// manage = يضيف/يعدّل المخدومين والدروس
+const ROLES = {
+  1: { name: "Admin",         tabs: ["scan","students","report","data","settings"], manage: true  },
+  2: { name: "Family Leader", tabs: ["students","report","data"],                   manage: true  },
+  3: { name: "Servant",       tabs: ["scan","students","report","data","settings"], manage: true  },
+  4: { name: "Student",       tabs: ["scan","report","data"],                       manage: false, student: true }
+};
+
+// المستخدمين: اسم المستخدم + كلمة السر + role
+// الطالب (role 4) لازم له number = رقمه في تاب المخدومين (نفس رقم الـ QR)
 const USERS = [
-  { user: "Nassif Victor", pass: "Nassif@321", admin: true },
-  { user: "Mira Ehab", pass: "QABDYhSW", admin: true },
-  { user: "Christine Alaa", pass: "JsD32tJq", admin: true },
-  { user: "Demiana Adel", pass: "SRKStPTj", admin: true },
-  { user: "Mario Nabil", pass: "VgU9Kfs6", admin: true }
+  { user: "Nassif Victor",  pass: "Nassif@321", role: 1 },
+  { user: "Mira Ehab",      pass: "QABDYhSW",   role: 3 },
+  { user: "Christine Alaa", pass: "JsD32tJq",   role: 3 },
+  { user: "Demiana Adel",   pass: "SRKStPTj",   role: 3 },
+  { user: "Mario Nabil",    pass: "VgU9Kfs6",   role: 3 },
+
+  // Family Leaders (role 2)
+  { user: "Micheal Mounir", pass: "yPd6D3CJ", role: 2 },
+  { user: "Marina Osama", pass: "HBrG8zqw", role: 2 },
+  { user: "Marina Habib", pass: "E3XX6PVd", role: 2 },
+  { user: "Michael Refaat", pass: "vRNKhruL", role: 2 },
+  { user: "Nancy George", pass: "PFtMujVv", role: 2 },
+  { user: "George Awad", pass: "sYhDYSHS", role: 2 },
+
+  // Students (role 4) — number = رقمه في تاب Students (نفس رقم الـ QR)
+  { user: "Michael Bassem", pass: "cjak25", role: 4, number: "1" },
+  { user: "Abanoub Hany", pass: "qd9uz9", role: 4, number: "2" },
+  { user: "David Maher", pass: "3bnndk", role: 4, number: "3" },
+  { user: "George Bassily", pass: "9mf2rs", role: 4, number: "4" },
+  { user: "Mina Emad", pass: "9vyu6t", role: 4, number: "5" },
+  { user: "George Ossama", pass: "u374dp", role: 4, number: "6" },
+  { user: "Carol Hany", pass: "cvvw25", role: 4, number: "7" },
+  { user: "Marvy Gayed", pass: "yfcp98", role: 4, number: "8" },
+  { user: "Phebe Fayez", pass: "n69cnu", role: 4, number: "9" },
+  { user: "Maurin Magued", pass: "zds5vz", role: 4, number: "10" },
+  { user: "Erinie Milad", pass: "gfgx2m", role: 4, number: "11" },
+  { user: "Kermina Joseph", pass: "sa9agd", role: 4, number: "12" },
+  { user: "Erinie Elias", pass: "xmyvtg", role: 4, number: "13" },
+  { user: "Angelina Mina", pass: "333m5e", role: 4, number: "14" },
+  { user: "Kevin Joseph", pass: "gcs5t4", role: 4, number: "15" },
+  { user: "Mark Amgad", pass: "k4g9bv", role: 4, number: "16" },
+  { user: "Mario Hany", pass: "xcxy8z", role: 4, number: "17" },
+  { user: "Cecil Simon", pass: "dbnq58", role: 4, number: "18" },
+  { user: "Youssef Amgad", pass: "cf4ktp", role: 4, number: "19" },
+  { user: "Marina Wafik", pass: "xkssxd", role: 4, number: "20" },
+  { user: "George Magued", pass: "5cp7kz", role: 4, number: "21" },
+  { user: "Erinie Ashraf", pass: "qnhf7x", role: 4, number: "22" },
+  { user: "Elona Hany", pass: "yjd8mw", role: 4, number: "23" },
+  { user: "Joice Ayman", pass: "c8xhap", role: 4, number: "24" },
+  { user: "Joice Wissam", pass: "sbx53g", role: 4, number: "25" },
+  { user: "Jinne Adel", pass: "j5trq4", role: 4, number: "26" },
+  { user: "Christina Nagy", pass: "kv7wx6", role: 4, number: "27" },
+  { user: "Mariam Sherif", pass: "3k5p89", role: 4, number: "28" },
+  { user: "Malak Magdy", pass: "pvyyrr", role: 4, number: "29" },
+  { user: "Natalie Sameh", pass: "cw6ep9", role: 4, number: "30" },
+  { user: "Helen Armia", pass: "zx92jq", role: 4, number: "31" }
 ];
 
 /*
@@ -390,9 +509,9 @@ const cleanNum = v => String(v ?? "").trim().replace(/^ST[:\-]?/i,"").replace(/[
 const fmt = n => Number.isInteger(+n) ? String(+n) : (+n).toFixed(1);
 
 let toastT;
-function toast(msg, bad){
+function toast(msg, bad, ms){
   const t = $("#toast"); t.textContent = msg; t.className = bad ? "bad" : "";
-  clearTimeout(toastT); toastT = setTimeout(()=>t.classList.add("hidden"), 2600);
+  clearTimeout(toastT); toastT = setTimeout(()=>t.classList.add("hidden"), ms || 2600);
 }
 let actx;
 function beep(ok=true){
@@ -411,6 +530,7 @@ function beep(ok=true){
 let db, user = null, isAdmin = false, unsubs = [];
 let students = {}, settings = {...DEFAULTS}, sessions = {}, att = [];
 let cur = null, sheetOpen = false;
+let lessons = {}, materials = [], openLesson = null, activeTab = "scan", R = null;
 
 document.querySelectorAll("[data-logo]").forEach(i => i.src = LOGO);
 (function(){ const l = document.createElement("link"); l.rel = "apple-touch-icon"; l.href = LOGO; document.head.appendChild(l); })();
@@ -423,16 +543,25 @@ function findUser(name){
   return USERS.find(x => x.user.replace(/\s+/g," ").toLowerCase() === n);
 }
 function showLogin(){
-  unsubs.forEach(f => f()); unsubs = []; user = null; isAdmin = false;
+  unsubs.forEach(f => f()); unsubs = []; user = null; isAdmin = false; openLesson = null; R = null;
   $("#app").classList.add("hidden"); $("#login").classList.remove("hidden");
 }
 function enter(u){
+  const role = ROLES[u.role];
+  if(!role || (role.student && !u.number)){
+    showLogin(); $("#lErr").textContent = "إعدادات المستخدم ده ناقصة (role أو number)"; return;
+  }
   unsubs.forEach(f => f()); unsubs = [];
-  user = {email: u.user}; isAdmin = !!u.admin;
+  R = role; user = {email: u.user, number: String(u.number || "")}; isAdmin = !!R.manage;
   $("#login").classList.add("hidden"); $("#app").classList.remove("hidden");
   $$(".admin-only").forEach(e => e.classList.toggle("hidden", !isAdmin));
-  $("#who").textContent = u.user + (isAdmin ? " — أدمن" : "");
+  $$(".staff-only").forEach(e => e.classList.toggle("hidden", !!R.student));
+  $$("nav.bar button").forEach(b => b.classList.toggle("hidden", !R.tabs.includes(b.dataset.tab)));
+  $("#staffHome").classList.toggle("hidden", !!R.student);
+  $("#studentHome").classList.toggle("hidden", !R.student);
+  $("#who").textContent = u.user + " — " + R.name;
   startApp();
+  setTimeout(() => gotoTab(R.tabs[0]), 0);
 }
 
 if(!FIREBASE_CONFIG.apiKey){
@@ -458,7 +587,7 @@ function startApp(){
   $("#sessDate").value = $("#qDate").value = $("#dDate").value = todayStr();
   unsubs.push(db.collection("students").onSnapshot(s => {
     students = {}; s.forEach(d => students[d.id] = {id:d.id, ...d.data()});
-    renderStudents(); renderRank(); renderDay();
+    renderStudents(); renderRank(); renderDay(); renderHome();
   }, err => toast("مشكلة في قراءة المخدومين: " + err.code, true)));
   unsubs.push(db.doc("settings/config").onSnapshot(d => {
     settings = {...DEFAULTS, ...(d.exists ? d.data() : {})}; fillSettings();
@@ -468,17 +597,28 @@ function startApp(){
   }));
   unsubs.push(db.collection("attendance").onSnapshot(s => {
     att = []; s.forEach(d => att.push({id:d.id, ...d.data()}));
-    renderToday(); renderRank(); renderDay();
+    renderToday(); renderRank(); renderDay(); renderHome();
   }, err => toast("مشكلة في قراءة الحضور: " + err.code, true)));
+  unsubs.push(db.collection("lessons").onSnapshot(s => {
+    lessons = {}; s.forEach(d => lessons[d.id] = {id:d.id, ...d.data()}); renderData();
+  }, err => toast("مشكلة في قراءة الدروس: " + err.code, true)));
+  unsubs.push(db.collection("materials").onSnapshot(s => {
+    materials = []; s.forEach(d => materials.push({id:d.id, ...d.data()})); renderData();
+  }, err => toast("مشكلة في قراءة الملفات: " + err.code, true)));
 }
 
 /* التنقل */
-$$("nav.bar button").forEach(b => b.onclick = () => {
-  $$("nav.bar button").forEach(x => x.classList.toggle("on", x === b));
-  $$(".tab").forEach(t => t.classList.toggle("active", t.id === "tab-" + b.dataset.tab));
-  if(b.dataset.tab !== "scan") stopScan();
+function gotoTab(name){
+  if(!R || !R.tabs.includes(name)) return;
+  $$("nav.bar button").forEach(x => x.classList.toggle("on", x.dataset.tab === name));
+  $$(".tab").forEach(tb => tb.classList.toggle("active", tb.id === "tab-" + name));
+  if(name !== "scan") stopScan();
+  activeTab = name;
+  if(name === "data") renderData(); else updateFab();
+  if(name === "scan") renderHome();
   window.scrollTo(0,0);
-});
+}
+$$("nav.bar button").forEach(b => b.onclick = () => gotoTab(b.dataset.tab));
 
 /* =====================================================================
    5) المسح
@@ -525,17 +665,8 @@ function renderPrevQ(){
 }
 
 function renderToday(){
-  const date = $("#sessDate").value, list = att.filter(a => a.date === date)
-    .sort((a,b) => String(b.time).localeCompare(String(a.time)));
-  $("#cnt").textContent = list.length;
-  $("#todayDate").textContent = date;
-  $("#todayList").innerHTML = list.length ? list.map(a => `
-    <div class="item click" data-n="${esc(a.number)}">
-      <div class="n">${esc(a.number)}</div>
-      <div class="t"><b>${esc(a.name)}</b><small>${esc(a.time)}${a.early ? " — بدري" : ""}</small></div>
-      <div class="pts">${fmt(a.points)}<small>نقطة</small></div>
-    </div>`).join("") : `<div class="empty">لسه محدش اتسجل. افتح الكاميرا وابدأ المسح.</div>`;
-  $$("#todayList .item").forEach(i => i.onclick = () => openStudent(i.dataset.n));
+  const date = $("#sessDate").value;
+  $("#cnt").textContent = att.filter(a => a.date === date).length;
 }
 
 /* ===== كارت المخدوم (Bottom Sheet) ===== */
@@ -676,7 +807,7 @@ $("#impGo").onclick = async () => {
 $("#printBtn").onclick = () => {
   const list = Object.values(students).sort(numSort);
   if(!list.length){ toast("مفيش مخدومين للطباعة", true); return; }
-  const area = $("#printArea"); area.innerHTML = "";
+  const area = $("#printArea"); area.className = ""; area.innerHTML = "";
   list.forEach(s => {
     const c = document.createElement("div"); c.className = "pcard";
     c.innerHTML = `<div class="sc"><img class="lg" src="${LOGO}" alt=""> مدرسة القديس بولس للكتاب المقدس</div><div class="q"></div><div class="pn">${esc(s.number)}</div><div class="pm">${esc(s.name)}</div>`;
@@ -698,25 +829,45 @@ function seg(w){
 $("#rClear").onclick = () => { $("#rFrom").value = $("#rTo").value = ""; renderRank(); };
 $("#dDate").onchange = renderDay;
 
-function aggregate(){
-  const from = $("#rFrom").value, to = $("#rTo").value, m = {};
+function aggregate(all){
+  const from = all ? "" : $("#rFrom").value, to = all ? "" : $("#rTo").value, m = {};
   Object.values(students).forEach(s => m[s.number] = {number:s.number, name:s.name, cls:s.cls||"", days:0, points:0, early:0, bible:0, notebook:0, pen:0, question:0});
   att.filter(a => (!from || a.date >= from) && (!to || a.date <= to)).forEach(a => {
     const r = m[a.number] || (m[a.number] = {number:a.number, name:a.name, cls:a.cls||"", days:0, points:0, early:0, bible:0, notebook:0, pen:0, question:0});
     r.days++; r.points += +a.points || 0;
     ["early","bible","notebook","pen","question"].forEach(k => { if(a[k]) r[k]++; });
   });
-  return Object.values(m).sort((a,b) => b.points - a.points || b.days - a.days || numSort(a,b));
+  const rows = Object.values(m).sort((a,b) => b.points - a.points || b.days - a.days || numSort(a,b));
+  let last = null, rk = 0;
+  rows.forEach((r,i) => { if(r.points !== last){ rk = i + 1; last = r.points; } r.rank = rk; });
+  return rows;
 }
 function renderRank(){
-  const rows = aggregate();
-  $("#rankList").innerHTML = rows.length ? rows.map((r,i) => `
-    <div class="item">
-      <div class="rank">${i+1}</div>
-      <div class="t"><b>${esc(r.name)} <small>#${esc(r.number)}</small></b>
-        <small><span class="pill">حضور ${r.days}</span><span class="pill">بدري ${r.early}</span><span class="pill">كتاب ${r.bible}</span><span class="pill">كشكول ${r.notebook}</span><span class="pill">قلم ${r.pen}</span><span class="pill">سؤال ${r.question}</span></small></div>
+  const rows = aggregate(), stu = !!(R && R.student);
+  $("#rankList").innerHTML = rows.length ? rows.map(r => {
+    const mine = stu && String(r.number) === String(user.number);
+    return `
+    <div class="item ${mine ? "me" : ""}">
+      <div class="rank">${r.rank}</div>
+      <div class="t"><b>${esc(r.name)}${(!stu || mine) ? ` <small>#${esc(r.number)}</small>` : ""}</b>
+        ${stu ? "" : `<small><span class="pill">حضور ${r.days}</span><span class="pill">بدري ${r.early}</span><span class="pill">كتاب ${r.bible}</span><span class="pill">كشكول ${r.notebook}</span><span class="pill">قلم ${r.pen}</span><span class="pill">سؤال ${r.question}</span></small>`}</div>
       <div class="pts">${fmt(r.points)}<small>نقطة</small></div>
-    </div>`).join("") : `<div class="empty">مفيش بيانات لسه.</div>`;
+    </div>`; }).join("") : `<div class="empty">مفيش بيانات لسه.</div>`;
+}
+function renderHome(){
+  if(!user || !R || !R.student) return;
+  const num = user.number, st = students[num], rows = aggregate(true), me = rows.find(r => String(r.number) === String(num));
+  $("#sName").textContent = (st && st.name) || user.email;
+  $("#sNum").textContent = "رقم " + num;
+  $("#sRank").textContent = me ? me.rank : "-";
+  $("#sOf").textContent = rows.length ? "(من " + rows.length + ")" : "";
+  $("#sPts").textContent = me ? fmt(me.points) : "0";
+  $("#sDays").textContent = me ? me.days : "0";
+  const q = $("#sQr");
+  if(q.dataset.num !== String(num)){
+    q.innerHTML = ""; q.dataset.num = String(num);
+    new QRCode(q, {text: "ST:" + num, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M});
+  }
 }
 $("#rCsv").onclick = () => {
   const rows = aggregate(), head = ["الرقم","الاسم","الفصل","أيام الحضور","بدري","الكتاب المقدس","الكشكول","القلم","السؤال","مجموع النقاط"];
@@ -725,6 +876,19 @@ $("#rCsv").onclick = () => {
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob(["\ufeff" + csv], {type:"text/csv;charset=utf-8"}));
   a.download = `attendance-${todayStr()}.csv`; a.click();
+};
+$("#rPdf").onclick = () => {
+  const rows = aggregate();
+  if(!rows.length){ toast("مفيش بيانات للتصدير", true); return; }
+  const from = $("#rFrom").value, to = $("#rTo").value;
+  const period = (from || to) ? `${from ? "من " + from + " " : ""}${to ? "إلى " + to : ""}` : "كل المدة";
+  const area = $("#printArea"); area.className = "report";
+  area.innerHTML = `
+    <div class="rh"><img src="${LOGO}" alt=""><div><h1>مدرسة القديس بولس للكتاب المقدس</h1><p>ترتيب النقاط — ${esc(period)}</p><p class="sm">تاريخ الطباعة: ${todayStr()}</p></div></div>
+    <table class="rt"><thead><tr><th>#</th><th>الرقم</th><th>الاسم</th><th>أيام الحضور</th><th>بدري</th><th>الكتاب</th><th>الكشكول</th><th>القلم</th><th>السؤال</th><th>النقاط</th></tr></thead>
+    <tbody>${rows.map((r,i) => `<tr><td>${r.rank}</td><td>${esc(r.number)}</td><td class="nm">${esc(r.name)}</td><td>${r.days}</td><td>${r.early}</td><td>${r.bible}</td><td>${r.notebook}</td><td>${r.pen}</td><td>${r.question}</td><td class="pt">${fmt(r.points)}</td></tr>`).join("")}</tbody></table>`;
+  toast("من نافذة الطباعة اختار Save as PDF", false, 5000);
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(() => window.print(), 300));
 };
 function renderDay(){
   const date = $("#dDate").value; if(!date) return;
@@ -760,6 +924,143 @@ $("#saveQ").onclick = async () => {
   try{ await db.doc("sessions/" + date).set({question: $("#qText").value.trim(), updatedBy: user.email}, {merge:true}); toast("اتحفظ السؤال"); }
   catch(e){ toast("معرفتش أحفظ: " + e.code, true); }
 };
+
+/* =====================================================================
+   9) Data: دروس + ملفات (لينكات)
+   ===================================================================== */
+const TYPES = {
+  pamphlet:["بامفلت", '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h5M9.5 16h5"/>'],
+  video:["فيديو", '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.5 9.5v5l4-2.5z"/>'],
+  folder:["فولدر Drive", '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'],
+  link:["رابط", '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>']
+};
+const TYPE_RANK = {pamphlet:0, video:1, folder:2, link:3};
+const icon = t => `<div class="ico"><svg viewBox="0 0 24 24">${(TYPES[t] || TYPES.link)[1]}</svg></div>`;
+
+// يقبل http/https بس (حماية من javascript: وغيره)
+function safeUrl(v){
+  v = String(v || "").trim(); if(!v) return "";
+  if(!/^[a-z][a-z0-9+.-]*:/i.test(v)) v = "https://" + v;
+  try{ const u = new URL(v); return /^https?:$/.test(u.protocol) ? u.href : ""; }catch(e){ return ""; }
+}
+function detectType(u){
+  try{
+    const x = new URL(u), h = x.hostname.replace(/^www\./,""), p = x.pathname.toLowerCase();
+    if(/youtube\.com|youtu\.be|vimeo\.com/.test(h)) return "video";
+    if(h === "drive.google.com" && p.includes("/folders/")) return "folder";
+    if(p.endsWith(".pdf") || h === "docs.google.com" || (h === "drive.google.com" && p.includes("/file/"))) return "pamphlet";
+  }catch(e){}
+  return "link";
+}
+const hostOf = u => { try{ return new URL(u).hostname.replace(/^www\./,""); }catch(e){ return ""; } };
+const lessonList = () => Object.values(lessons).sort((a,b) =>
+  (parseFloat(a.num) || 1e9) - (parseFloat(b.num) || 1e9) || String(a.title).localeCompare(String(b.title), undefined, {numeric:true}));
+const lessonMats = id => materials.filter(m => m.lessonId === id).sort((a,b) =>
+  (TYPE_RANK[a.type] ?? 9) - (TYPE_RANK[b.type] ?? 9) || ((a.ts && a.ts.seconds) || 9e12) - ((b.ts && b.ts.seconds) || 9e12));
+function updateFab(){ $("#fab").classList.toggle("hidden", !(activeTab === "data" && R && !R.student && (openLesson || isAdmin))); }
+
+function renderData(){
+  const box = $("#dataView"); if(!box || !user) return;
+  if(openLesson && !lessons[openLesson]) openLesson = null;
+  if(!openLesson){
+    const ls = lessonList();
+    box.innerHTML = `<div class="panel"><h2>الدروس <small>(${ls.length})</small></h2>${ls.length ? ls.map(l => `
+      <div class="item click" data-l="${esc(l.id)}">
+        <div class="n">${esc(l.num || "•")}</div>
+        <div class="t"><b>${esc(l.title)}</b></div>
+      </div>`).join("") : `<div class="empty">${isAdmin ? "مفيش دروس لسه. دوس + تحت وضيف أول درس." : "مفيش دروس لسه."}</div>`}</div>`;
+    $$("#dataView [data-l]").forEach(i => i.onclick = () => { openLesson = i.dataset.l; renderData(); window.scrollTo(0,0); });
+  }else{
+    const l = lessons[openLesson], ms = lessonMats(openLesson), fu = safeUrl(l.folderUrl);
+    box.innerHTML = `<div class="dh"><button class="btn sm ghost" id="dBack">رجوع</button><h2>${esc(l.title)}</h2>${isAdmin ? '<button class="btn sm ghost" id="dEdit">تعديل الدرس</button>' : ""}</div>
+      ${fu ? `<a class="folderbtn" href="${esc(fu)}" target="_blank" rel="noopener noreferrer"><div class="ico"><svg viewBox="0 0 24 24">${TYPES.folder[1]}</svg></div><div class="t"><b>فولدر الدرس على Google Drive</b><small>${esc(hostOf(fu))} — دوس عشان تفتحه</small></div></a>` : ""}
+      ${(ms.length || !fu) ? `<div class="panel">${ms.length ? ms.map(m => `
+        <div class="item">
+          <a class="mat" href="${esc(safeUrl(m.url) || "#")}" target="_blank" rel="noopener noreferrer">${icon(m.type)}
+            <div class="t"><b>${esc(m.title)}</b><small>${esc((TYPES[m.type] || TYPES.link)[0])} — ${esc(hostOf(m.url))}</small></div></a>
+          ${(isAdmin || m.addedBy === user.email) ? `<button class="btn sm ghost" data-m="${esc(m.id)}">تعديل</button>` : ""}
+        </div>`).join("") : `<div class="empty">الدرس ده فاضي. دوس + تحت وضيف البامفلت أو الفيديوهات أو لينك فولدر Drive.</div>`}</div>` : ""}`;
+    $("#dBack").onclick = () => { openLesson = null; renderData(); window.scrollTo(0,0); };
+    if($("#dEdit")) $("#dEdit").onclick = () => lessonForm(openLesson);
+    $$("#dataView [data-m]").forEach(b => b.onclick = () => materialForm(b.dataset.m));
+  }
+  updateFab();
+}
+$("#fab").onclick = () => openLesson ? materialForm() : (isAdmin ? lessonForm() : null);
+
+function lessonForm(id){
+  const l = id ? lessons[id] : {num: String(Math.max(0, ...Object.values(lessons).map(x => parseFloat(x.num) || 0)) + 1), title: ""};
+  openSheet(`
+    <div class="grab"></div>
+    <h2 style="margin:0 0 6px;color:var(--brown)">${id ? "تعديل الدرس" : "درس جديد"}</h2>
+    <label class="f">رقم الدرس (للترتيب)</label><input type="number" id="lNum" inputmode="numeric" value="${esc(l.num || "")}">
+    <label class="f">عنوان الدرس</label><input type="text" id="lTitle" value="${esc(l.title)}">
+    <label class="f">لينك فولدر الدرس (Google Drive) <small style="font-weight:400;color:var(--muted)">— اختياري</small></label>
+    <input type="text" id="lUrl" class="ltr" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="https://drive.google.com/drive/folders/..." value="${esc(l.folderUrl || "")}">
+    <div class="hint">الفولدر بيظهر للكل كزرار كبير فوق في الدرس. اعمله Share ← Anyone with the link.</div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn primary grow" id="lSave">حفظ</button>
+      ${id ? '<button class="btn danger" id="lDel">حذف</button>' : ""}
+      <button class="btn ghost" id="lClose">إغلاق</button>
+    </div>`);
+  $("#lClose").onclick = closeSheet;
+  $("#lSave").onclick = async () => {
+    const title = $("#lTitle").value.trim(), num = $("#lNum").value.trim(), rawUrl = $("#lUrl").value.trim(), folderUrl = safeUrl(rawUrl);
+    if(!title){ toast("اكتب عنوان الدرس", true); return; }
+    if(rawUrl && !folderUrl){ toast("لينك الفولدر مش صحيح", true); return; }
+    try{
+      if(id) await db.doc("lessons/" + id).set({title, num, folderUrl}, {merge:true});
+      else await db.collection("lessons").add({title, num, folderUrl, createdBy: user.email, ts: firebase.firestore.FieldValue.serverTimestamp()});
+      toast("اتحفظ"); closeSheet();
+    }catch(e){ toast("معرفتش أحفظ: " + e.code, true); }
+  };
+  if(id) $("#lDel").onclick = async () => {
+    if(!confirm("تحذف الدرس وكل الملفات اللي فيه؟")) return;
+    try{
+      const b = db.batch();
+      materials.filter(m => m.lessonId === id).forEach(m => b.delete(db.doc("materials/" + m.id)));
+      b.delete(db.doc("lessons/" + id)); await b.commit();
+      openLesson = null; toast("اتحذف"); closeSheet(); renderData();
+    }catch(e){ toast("معرفتش أحذف: " + e.code, true); }
+  };
+}
+
+function materialForm(id){
+  const m = id ? materials.find(x => x.id === id) : {title:"", url:"", type:"pamphlet"};
+  let manual = !!id;
+  openSheet(`
+    <div class="grab"></div>
+    <h2 style="margin:0 0 6px;color:var(--brown)">${id ? "تعديل ملف" : "ملف جديد"} <small style="font-weight:400;color:var(--muted)">— ${esc((lessons[openLesson] || {}).title || "")}</small></h2>
+    <label class="f">اللينك</label>
+    <input type="text" id="mUrl" class="ltr" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="https://drive.google.com/..." value="${esc(m.url)}">
+    <label class="f">العنوان</label><input type="text" id="mTitle" placeholder="مثال: بامفلت الدرس" value="${esc(m.title)}">
+    <label class="f">النوع</label>
+    <select id="mType">${Object.entries(TYPES).map(([k,v]) => `<option value="${k}" ${m.type === k ? "selected" : ""}>${v[0]}</option>`).join("")}</select>
+    <div class="hint">ارفع الملف أو الفيديو على Google Drive واختار Share ← Anyone with the link (أو شاركه مع الخدام)، وبعدين الصق اللينك هنا. ممكن تحط لينك فولدر كامل فيه كل داتا الدرس.</div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn primary grow" id="mSave">حفظ</button>
+      ${id ? '<button class="btn danger" id="mDel">حذف</button>' : ""}
+      <button class="btn ghost" id="mClose">إغلاق</button>
+    </div>`);
+  $("#mClose").onclick = closeSheet;
+  $("#mUrl").oninput = () => { if(manual) return; const u = safeUrl($("#mUrl").value); if(u) $("#mType").value = detectType(u); };
+  $("#mType").onchange = () => { manual = true; };
+  $("#mSave").onclick = async () => {
+    const url = safeUrl($("#mUrl").value), type = $("#mType").value;
+    if(!url){ toast("اللينك مش صحيح", true); return; }
+    const title = $("#mTitle").value.trim() || TYPES[type][0];
+    try{
+      if(id) await db.doc("materials/" + id).set({title, url, type}, {merge:true});
+      else await db.collection("materials").add({lessonId: openLesson, title, url, type, addedBy: user.email, ts: firebase.firestore.FieldValue.serverTimestamp()});
+      toast("اتحفظ"); closeSheet();
+    }catch(e){ toast("معرفتش أحفظ: " + e.code, true); }
+  };
+  if(id) $("#mDel").onclick = async () => {
+    if(!confirm("تحذف الملف ده؟")) return;
+    try{ await db.doc("materials/" + id).delete(); toast("اتحذف"); closeSheet(); }
+    catch(e){ toast("معرفتش أحذف: " + e.code, true); }
+  };
+}
 </script>
 </body>
 </html>
