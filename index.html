@@ -185,6 +185,8 @@ textarea{min-height:90px;resize:vertical}
 .badge.sent{background:#e3f0e8;color:#1f6b42}
 .badge.draft{background:#eadcb4;color:var(--brown-2)}
 .badge.done{background:#e6dfd6;color:#7a6558}
+.cmt{background:#e8f1fa;border-inline-start:4px solid var(--blue);border-radius:10px;padding:9px 12px;margin-top:10px;white-space:pre-wrap;line-height:1.8;font-size:15px}
+h2.sect{margin:18px 4px 8px;font-size:16px;color:var(--brown)}
 
 /* ===== Data tab ===== */
 #tab-data{padding-bottom:74px}
@@ -287,7 +289,7 @@ input.ltr{direction:ltr;text-align:left}
       <div id="staffHome">
       <div class="panel">
         <div class="grid2">
-          <div><label class="f" style="margin-top:0">اختر التاريخ</label><input type="date" id="sessDate"></div>
+          <div><label class="f" style="margin-top:0">تاريخ </label><input type="date" id="sessDate"></div>
           <div class="cntbox"><label class="f" style="margin-top:0">حاضرين النهارده</label><div id="cnt" style="font-size:30px;font-weight:900;color:var(--brown);line-height:1.25">0</div></div>
         </div>
       </div>
@@ -350,7 +352,7 @@ input.ltr{direction:ltr;text-align:left}
 
     <!-- التقارير -->
     <section class="tab" id="tab-report">
-      <div class="seg staff-only"><button id="segRank" class="on">Scoring System</button><button id="segDay">حضور وغياب </button></div>
+      <div class="seg staff-only"><button id="segRank" class="on">الترتيب والنقاط</button><button id="segDay">حضور وغياب </button></div>
 
       <div id="rankView">
         <div class="panel">
@@ -358,14 +360,14 @@ input.ltr{direction:ltr;text-align:left}
             <div><label class="f" style="margin-top:0">من</label><input type="date" id="rFrom"></div>
             <div><label class="f" style="margin-top:0">إلى</label><input type="date" id="rTo"></div>
           </div>
-          <div class="row" style="margin-top:10px"><button class="btn ghost sm" id="rClear">كل المدة</button><button class="btn ghost sm staff-only" id="rCsv">Export CSV</button><button class="btn gold sm staff-only" id="rPdf"> PDF</button></div>
+          <div class="row" style="margin-top:10px"><button class="btn ghost sm" id="rClear">كل المدة</button><button class="btn ghost sm staff-only" id="rCsv"> CSV</button><button class="btn gold sm staff-only" id="rPdf"> PDF</button></div>
         </div>
         <div class="panel"><h2>الترتيب</h2><div id="rankList"></div></div>
       </div>
 
       <div id="dayView" class="hidden">
         <div class="panel">
-          <label class="f" style="margin-top:0">اختر التاريخ</label><input type="date" id="dDate">
+          <label class="f" style="margin-top:0">تاريخ </label><input type="date" id="dDate">
         </div>
         <div class="panel"><h2>حضروا <small id="dPresent"></small></h2><div id="dPresentList"></div></div>
         <div class="panel"><h2>غابوا <small id="dAbsent"></small></h2><div id="dAbsentList"></div></div>
@@ -447,7 +449,6 @@ const USERS = [
   { user: "Mira Ehab",      pass: "QABDYhSW",   role: 3 },
   { user: "Christine Alaa", pass: "JsD32tJq",   role: 3 },
   { user: "Demiana Adel",   pass: "SRKStPTj",   role: 3 },
-  { user: "Madonna ِAmir",   pass: "RXRStPTq",   role: 3 },
   { user: "Mario Nabil",    pass: "VgU9Kfs6",   role: 3 },
 
   // Family Leaders (role 2)
@@ -959,7 +960,7 @@ $("#rPdf").onclick = () => {
   const area = $("#printArea"); area.className = "report";
   area.innerHTML = `
     <div class="rh"><img src="${LOGO}" alt=""><div><h1>مدرسة القديس بولس للكتاب المقدس</h1><p>ترتيب النقاط — ${esc(period)}</p><p class="sm">تاريخ الطباعة: ${todayStr()}</p></div></div>
-    <table class="rt"><thead><tr><th>#</th><th>الرقم</th><th>الاسم</th><th>أيام الحضور</th><th>بدري</th><th>الكتاب</th><th>الكشكول</th><th>القلم</th><th>السؤال</th><th>Bonus</th><th>Minus</th><th>النقاط</th></tr></thead>
+    <table class="rt"><thead><tr><th>#</th><th>الرقم</th><th>الاسم</th><th>أيام الحضور</th><th>بدري</th><th>الكتاب</th><th>الكشكول</th><th>القلم</th><th>السؤال</th><th>بونص</th><th>خصم</th><th>النقاط</th></tr></thead>
     <tbody>${rows.map((r,i) => `<tr><td>${r.rank}</td><td>${esc(r.number)}</td><td class="nm">${esc(r.name)}</td><td>${r.days}</td><td>${r.early}</td><td>${r.bible}</td><td>${r.notebook}</td><td>${r.pen}</td><td>${fmt(r.question)}</td><td>${fmt(r.bonus)}</td><td>${fmt(r.penalty)}</td><td class="pt">${fmt(r.points)}</td></tr>`).join("")}</tbody></table>`;
   toast("من نافذة الطباعة اختار Save as PDF", false, 5000);
   (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(() => window.print(), 300));
@@ -972,7 +973,7 @@ function renderDay(){
   $("#dPresent").textContent = `(${present.length})`; $("#dAbsent").textContent = `(${absent.length})`;
   $("#dPresentList").innerHTML = present.length ? present.map(a => `
     <div class="item"><div class="n">${esc(a.number)}</div><div class="t"><b>${esc(a.name)}</b><small>${esc(a.time)}${a.early ? " — بدري" : ""}</small></div><div class="pts">${fmt(a.points)}</div></div>`).join("")
-    : `<div class="empty">محدش اتسجل في المرة دي.</div>`;
+    : `<div class="empty">محدش اتسجل .</div>`;
   $("#dAbsentList").innerHTML = absent.length ? absent.map(s => `
     <div class="item"><div class="n">${esc(s.number)}</div><div class="t"><b>${esc(s.name)}</b><small>${esc(s.cls||"")}</small></div></div>`).join("")
     : `<div class="empty">الكل حضر.</div>`;
@@ -1174,23 +1175,39 @@ function renderQA(){
 
 /* ---------- الطالب ---------- */
 function qaStudent(box){
-  const qs = Object.values(questions).filter(isOpen)
+  const sentQs = Object.values(questions).filter(q => q.status === "sent")
     .sort((a,b) => ((b.sentAt && b.sentAt.seconds) || 9e12) - ((a.sentAt && a.sentAt.seconds) || 9e12));
-  box.innerHTML = qs.length ? qs.map(q => {
-    const a = answers.find(x => x.qid === q.id), sc = qscores.find(x => x.qid === q.id && String(x.number) === String(user.number));
+  const openQs = sentQs.filter(isOpen);
+  // الأسئلة اللي ميعادها خلص: بتفضل ظاهرة بس لو الطالب جاوب عليها (عشان يشوف درجته وتعليق المصحح)
+  const pastQs = sentQs.filter(q => !isOpen(q) && answers.some(x => x.qid === q.id));
+  const mine = q => ({a: answers.find(x => x.qid === q.id), sc: qscores.find(x => x.qid === q.id && String(x.number) === String(user.number))});
+  const cmt = a => a && a.comment ? `<div class="cmt"><b>تعليق المصحح:</b> ${esc(a.comment)}</div>` : "";
+  const openCard = q => {
+    const {a, sc} = mine(q);
     const st = sc ? `<span class="badge sent">الدرجة: ${fmt(sc.score)}</span>` : (a ? `<span class="badge draft">اتبعتت إجابتك — مستني التقييم</span>` : "");
     const btn = sc ? "شوف إجابتي" : (a ? "تعديل إجابتي" : "جاوب السؤال");
     return `<div class="panel"><div class="qtext">${esc(q.text)}</div>
-      ${q.deadline ? `<div class="muted" style="margin-bottom:8px">آخر ميعاد للإجابة: ${fmtDL(q.deadline)}</div>` : ""}${st}
+      ${q.deadline ? `<div class="muted" style="margin-bottom:8px">آخر ميعاد للإجابة: ${fmtDL(q.deadline)}</div>` : ""}${st}${cmt(a)}
       <button class="btn ${a ? "ghost" : "gold"} block" style="margin-top:10px" data-ans="${esc(q.id)}">${btn}</button></div>`;
-  }).join("") : `<div class="panel"><div class="empty">مفيش سؤال متبعت لحد دلوقتي.</div></div>`;
+  };
+  const pastCard = q => {
+    const {a, sc} = mine(q);
+    const st = sc ? `<span class="badge sent">الدرجة: ${fmt(sc.score)}</span>` : `<span class="badge draft">مستني التقييم</span>`;
+    return `<div class="panel"><div class="qtext">${esc(snip(q.text, 140))}</div>${st}${cmt(a)}
+      <button class="btn ghost block" style="margin-top:10px" data-ans="${esc(q.id)}">شوف إجابتي</button></div>`;
+  };
+  box.innerHTML = (openQs.length ? openQs.map(openCard).join("")
+      : `<div class="panel"><div class="empty">${pastQs.length ? "مفيش سؤال مفتوح دلوقتي." : "مفيش سؤال متبعت لحد دلوقتي."}</div></div>`)
+    + (pastQs.length ? `<h2 class="sect">إجاباتي السابقة</h2>` + pastQs.map(pastCard).join("") : "");
   $$("#qaView [data-ans]").forEach(b => b.onclick = () => answerForm(b.dataset.ans));
 }
 
 function answerForm(id){
   const q = questions[id]; if(!q) return;
-  if(!isOpen(q)){ toast("ميعاد الإجابة على السؤال ده خلص", true); renderQA(); return; }
-  const a = answers.find(x => x.qid === id), sc = qscores.find(x => x.qid === id && String(x.number) === String(user.number)), locked = !!sc;
+  const a = answers.find(x => x.qid === id), sc = qscores.find(x => x.qid === id && String(x.number) === String(user.number));
+  const open = isOpen(q);
+  if(!open && !a){ toast("ميعاد الإجابة على السؤال ده خلص", true); renderQA(); return; }
+  const locked = !!sc || !open;
   openSheet(`
     <div class="grab"></div>
     <h2 style="margin:0 0 8px;color:var(--brown)">سؤال الحلقة</h2>
@@ -1198,7 +1215,8 @@ function answerForm(id){
     ${q.deadline ? `<div class="muted" style="margin-bottom:8px">آخر ميعاد للإجابة: ${fmtDL(q.deadline)}</div>` : ""}
     <label class="f" style="margin-top:0">إجابتك</label>
     <textarea id="aText" ${locked ? "readonly" : ""} placeholder="اكتب إجابتك هنا">${esc(a ? a.text : "")}</textarea>
-    ${locked ? `<div class="note" style="margin-top:10px">الدرجة: ${fmt(sc.score)}</div>` : ""}
+    ${sc ? `<div class="note" style="margin-top:10px">الدرجة: ${fmt(sc.score)}</div>` : (!open ? `<div class="note" style="margin-top:10px">الميعاد خلص — إجابتك مستنية التقييم</div>` : "")}
+    ${a && a.comment ? `<div class="cmt"><b>تعليق المصحح:</b> ${esc(a.comment)}</div>` : ""}
     <div class="row" style="margin-top:14px">
       ${locked ? "" : `<button class="btn primary grow" id="aSave">${a ? "تحديث الإجابة" : "إرسال الإجابة"}</button>`}
       <button class="btn ghost ${locked ? "grow" : ""}" id="aClose">إغلاق</button>
@@ -1211,7 +1229,7 @@ function answerForm(id){
     if(!cq || !isOpen(cq)){ toast("ميعاد الإجابة على السؤال ده خلص", true); closeSheet(); renderQA(); return; }
     const st = students[user.number];
     try{
-      await db.doc("answers/" + id + "_" + user.number).set({qid:id, number:String(user.number), name:(st && st.name) || user.email, text, ts:SERVER_TS()});
+      await db.doc("answers/" + id + "_" + user.number).set({qid:id, number:String(user.number), name:(st && st.name) || user.email, text, ts:SERVER_TS()}, {merge:true});
       toast("اتبعتت إجابتك"); closeSheet();
     }catch(e){ toast("معرفتش أبعت: " + e.code, true); }
   };
@@ -1247,7 +1265,7 @@ function qaStaff(box){
       const s = scoreOf(a);
       return `<div class="item click" data-a="${esc(a.number)}">
         <div class="n">${esc(a.number)}</div>
-        <div class="t"><b>${esc(a.name)}</b><small>${esc(snip(a.text, 60))}</small></div>
+        <div class="t"><b>${esc(a.name)}</b><small>${a.comment ? '<span class="pill">فيه تعليق</span> ' : ""}${esc(snip(a.text, 60))}</small></div>
         <div class="pts">${s ? fmt(s.score) : "—"}<small>${s ? esc(s.scoreDate || "") : "لسه"}</small></div>
       </div>`; }).join("") : `<div class="empty">لسه محدش جاوب.</div>`}</div>
     <div class="panel"><h2>لسه ما جاوبوش <small>(${missing.length})</small></h2>${missing.length ? `<div class="row" style="gap:6px">${missing.map(s => `<span class="pill">${esc(s.name)}</span>`).join("")}</div>` : `<div class="empty">الكل جاوب.</div>`}</div>`;
@@ -1325,19 +1343,27 @@ function gradeForm(id, num){
     ${manage ? `<div class="grid2">
       <div><label class="f" style="margin-top:0">الدرجة</label><input type="number" id="gScore" inputmode="decimal" step="0.5" min="0" value="${s ? esc(s.score) : ""}"></div>
       <div><label class="f" style="margin-top:0">تتضاف في تاريخ</label><input type="date" id="gDate" value="${esc((s && s.scoreDate) || todayStr())}"></div>
-    </div>` : (s ? `<div class="note">الدرجة: ${fmt(s.score)} — تاريخ الإضافة: ${esc(s.scoreDate || "")}</div>` : `<div class="empty">لسه متقيّمتش.</div>`)}
+    </div>
+    <label class="f">تعليق للطالب <small style="font-weight:400;color:var(--muted)">— اختياري، بيظهر له هو بس</small></label>
+    <textarea id="gComment" style="min-height:90px" placeholder="اكتب تصحيحك أو ملاحظتك على الإجابة">${esc(a.comment || "")}</textarea>`
+    : `${s ? `<div class="note">الدرجة: ${fmt(s.score)} — تاريخ الإضافة: ${esc(s.scoreDate || "")}</div>` : `<div class="empty">لسه متقيّمتش.</div>`}
+    ${a.comment ? `<div class="cmt"><b>تعليق المصحح:</b> ${esc(a.comment)}</div>` : ""}`}
     <div class="row" style="margin-top:14px">
-      ${manage ? `<button class="btn primary grow" id="gSave">حفظ الدرجة</button>${s ? '<button class="btn danger" id="gDel">شيل الدرجة</button>' : ""}` : ""}
+      ${manage ? `<button class="btn primary grow" id="gSave">حفظ</button>${s ? '<button class="btn danger" id="gDel">شيل الدرجة</button>' : ""}` : ""}
       <button class="btn ghost ${manage ? "" : "grow"}" id="gClose">إغلاق</button>
     </div>`);
   $("#gClose").onclick = closeSheet;
   if(!manage) return;
   $("#gSave").onclick = async () => {
-    const score = parseFloat($("#gScore").value), scoreDate = $("#gDate").value;
+    const score = parseFloat($("#gScore").value), scoreDate = $("#gDate").value, comment = $("#gComment").value.trim();
     if(!(score >= 0)){ toast("اكتب الدرجة", true); return; }
     if(!scoreDate){ toast("اختار تاريخ إضافة الدرجة", true); return; }
     try{
-      await db.doc("qscores/" + id + "_" + num).set({qid:id, number:String(num), name:a.name, score, scoreDate, gradedBy:user.email, ts:SERVER_TS()});
+      const b = db.batch();
+      b.set(db.doc("qscores/" + id + "_" + num), {qid:id, number:String(num), name:a.name, score, scoreDate, gradedBy:user.email, ts:SERVER_TS()});
+      // التعليق بيتخزن مع إجابة الطالب نفسه (الطالب بيقرا إجاباته هو بس)
+      b.set(db.doc("answers/" + id + "_" + num), {comment, commentBy:user.email, commentTs:SERVER_TS()}, {merge:true});
+      await b.commit();
       toast("اتحفظت الدرجة — الترتيب اتحدّث"); closeSheet();
     }catch(e){ toast("معرفتش أحفظ: " + e.code, true); }
   };
