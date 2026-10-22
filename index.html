@@ -76,6 +76,17 @@ input[type=text],input[type=email],input[type=password],input[type=number],input
 }
 textarea{min-height:90px;resize:vertical}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2>*{min-width:0}
+input[type=date],input[type=time]{-webkit-appearance:none;appearance:none;min-width:0;min-height:46px;display:block;text-align:start;line-height:1.2}
+input[type=date]::-webkit-date-and-time-value,input[type=time]::-webkit-date-and-time-value{text-align:start;min-height:1.2em}
+input.dempty{position:relative}
+input.dempty[data-empty="1"]{color:transparent}
+input.dempty[data-empty="1"]::before{content:attr(data-ph);color:var(--muted);position:absolute;inset-inline-start:12px;top:50%;transform:translateY(-50%);pointer-events:none}
+/* إحساس الضغط على كل الأزرار */
+button,.item.click,.chip{touch-action:manipulation;transition:transform .08s ease,filter .08s ease,background-color .12s ease}
+.btn:active,button.chip:active,nav.bar button:active,.seg button:active{transform:scale(.95);filter:brightness(.88)}
+.item.click:active{background:#f3e8c4;transform:scale(.99)}
+.btn.on{background:var(--brown);color:var(--paper)}
 .btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;font-size:15px;background:#eadcb4;color:var(--brown)}
 .btn.primary{background:var(--brown);color:var(--paper)}
 .btn.gold{background:var(--gold);color:#fff}
@@ -166,6 +177,20 @@ textarea{min-height:90px;resize:vertical}
 .idstats small{color:var(--muted);font-size:12px}
 .item.me{background:var(--gold-soft);border-radius:12px;padding-inline:8px}
 
+/* ===== تصحيح الدرجات (Role 1) ===== */
+.fxsec{margin:14px 0 6px;font-weight:800;color:var(--brown);font-size:15px}
+.fxrow{display:flex;align-items:center;gap:8px;padding:10px 4px;border-bottom:1px solid #eadcb4}
+.fxrow:last-child{border-bottom:0}
+.fxrow .t{flex:1;min-width:0;font-size:14px;line-height:1.6}
+.fxrow .t small{display:block;color:var(--muted)}
+.fxrow .v{font-weight:900;color:var(--brown);font-size:17px;min-width:44px;text-align:center}
+.fxrow .v.neg{color:var(--bad)}
+.fxrow .ed{font-size:11px;color:var(--muted)}
+.fxgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px}
+.fxgrid>div{min-width:0}
+.fxgrid label{display:block;font-size:12px;font-weight:700;color:var(--brown-2);margin:0 0 3px}
+.fxgrid input{text-align:center;font-weight:700}
+
 /* ===== Bonus ===== */
 .sblock{border-bottom:1px solid #eadcb4}
 .sblock:last-child{border-bottom:0}
@@ -194,7 +219,20 @@ h2.sect{margin:18px 4px 8px;font-size:16px;color:var(--brown)}
 .fab:active{transform:scale(.95)}
 .ico{width:42px;height:42px;border-radius:12px;background:var(--brown);display:grid;place-items:center;flex:none}
 .ico svg{width:22px;height:22px;stroke:var(--gold-soft);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-a.mat{display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-decoration:none;color:inherit}
+a.mat,div.mat{display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-decoration:none;color:inherit}
+div.mat{cursor:pointer}
+div.mat:active{opacity:.7}
+/* ===== قارئ PDF ===== */
+.pdfview{position:fixed;inset:0;z-index:80;background:#2b1d16;display:flex;flex-direction:column}
+.pdfbar{display:flex;align-items:center;gap:8px;padding:8px 10px;padding-top:calc(8px + var(--safe-t));background:var(--brown);color:var(--paper);border-bottom:3px solid var(--gold)}
+.pdfbar button{width:42px;height:42px;flex:none;border-radius:12px;border:1px solid var(--gold-soft);background:transparent;color:var(--gold-soft);font-size:22px;font-weight:700;line-height:1;padding:0}
+.pdft{flex:1;min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pdfpg{font-size:13px;color:var(--gold-soft);min-width:54px;text-align:center;direction:ltr}
+.pdfbody{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;position:relative;padding:10px 0 calc(24px + var(--safe-b))}
+.pdfpages{width:max-content;min-width:100%;display:flex;flex-direction:column;align-items:center}
+.pgwrap{margin:0 0 10px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.45);flex:none}
+.pgwrap canvas{display:block;width:100%;height:100%}
+.pdfmsg{color:var(--gold-soft);padding:48px 20px;text-align:center;font-weight:600}
 .dh{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .dh h2{margin:0;flex:1;font-size:18px;color:var(--brown)}
 a.folderbtn{display:flex;align-items:center;gap:12px;background:var(--brown);color:var(--paper);text-decoration:none;border-radius:16px;padding:12px 14px;margin-bottom:12px;border-bottom:4px solid var(--gold)}
@@ -362,7 +400,7 @@ input.ltr{direction:ltr;text-align:left}
           </div>
           <div class="row" style="margin-top:10px"><button class="btn ghost sm" id="rClear">كل المدة</button><button class="btn ghost sm staff-only" id="rCsv"> CSV</button><button class="btn gold sm staff-only" id="rPdf"> PDF</button></div>
         </div>
-        <div class="panel"><h2>الترتيب</h2><div id="rankList"></div></div>
+        <div class="panel"><h2>الترتيب</h2><div id="fixHint" class="muted hidden" style="margin:-4px 0 8px">دوس على أي اسم عشان تصحّح نقاطه</div><div id="rankList"></div></div>
       </div>
 
       <div id="dayView" class="hidden">
@@ -412,6 +450,16 @@ input.ltr{direction:ltr;text-align:left}
 
 <div id="sheetBg" class="sheetbg hidden"></div>
 <div id="sheet" class="sheet hidden"></div>
+<div id="pdfView" class="pdfview hidden">
+  <div class="pdfbar">
+    <button id="pdfClose" aria-label="إغلاق">✕</button>
+    <div class="pdft" id="pdfTitle"></div>
+    <div class="pdfpg" id="pdfPg"></div>
+    <button id="pdfMinus" aria-label="تصغير">−</button>
+    <button id="pdfPlus" aria-label="تكبير">+</button>
+  </div>
+  <div class="pdfbody" id="pdfBody" dir="ltr"></div>
+</div>
 <div id="toast" class="hidden"></div>
 <div id="printArea"></div>
 
@@ -434,9 +482,10 @@ const FIREBASE_CONFIG = {
 // tabs   = التابات اللي بتظهر للدور ده (scan = Home، qa = سؤال الحلقة)
 // manage = يضيف/يعدّل المخدومين والدروس
 // bonus  = يدّي بونص للمخدومين من تاب Students
+// fix    = يصحّح الدرجات (حضور/سؤال/بونص) من تاب Reports
 // qa     = manage (يكتب السؤال ويبعته ويقيّم) | view (يشوف بس) | answer (يجاوب)
 const ROLES = {
-  1: { name: "Admin",         tabs: ["scan","students","report","data","qa","settings"], manage: true,  qa: "manage", bonus: true },
+  1: { name: "Admin",         tabs: ["scan","students","report","data","qa","settings"], manage: true,  qa: "manage", bonus: true, fix: true },
   2: { name: "Family Leader", tabs: ["students","report","data","qa"],                   manage: true,  qa: "view"   },
   3: { name: "Servant",       tabs: ["scan","students","report","data","qa","settings"], manage: true,  qa: "manage", bonus: true },
   4: { name: "Student",       tabs: ["scan","report","data","qa"],                       manage: false, qa: "answer", student: true }
@@ -703,7 +752,33 @@ function closeSheet(){
 }
 $("#sheetBg").onclick = closeSheet;
 
-const calc = f => ITEMS.reduce((p,[k]) => p + (f[k] ? +settings[k] : 0), +settings.attend);
+// ===== درجة كل بند بتتخزن وقت ما بتتدي. لو غيّرت الإعدادات بعد كده، القديم مبيتغيرش =====
+const PT_KEYS = ["attend","early","bible","notebook","pen"];
+const sumPts = p => PT_KEYS.reduce((s,k) => s + (+p[k] || 0), 0) + (+p.legacy || 0);
+// الحضور القديم (قبل ما نخزّن درجة كل بند): بنعرض تفصيلته بس لو مطابقة للمجموع المخزّن، وإلا بتتحسب "سابق"
+function legacyBreakdown(a){
+  const b = {attend: +settings.attend || 0, early: a.early ? (+settings.early || 0) : 0, bible: a.bible ? (+settings.bible || 0) : 0,
+             notebook: a.notebook ? (+settings.notebook || 0) : 0, pen: a.pen ? (+settings.pen || 0) : 0};
+  return Math.abs(sumPts(b) - (+a.points || 0)) < 1e-9 ? b : null;
+}
+function ptsOf(a){
+  if(a.pts) return {attend:0, early:0, bible:0, notebook:0, pen:0, ...a.pts, legacy: +(a.pts.legacy) || 0};
+  const b = legacyBreakdown(a);
+  return b ? {...b, legacy:0} : {attend:0, early:0, bible:0, notebook:0, pen:0, legacy: +a.points || 0};
+}
+// درجات الحضور بعد التعديل: اللي كان متدّي قبل كده بيحتفظ بقيمته القديمة، والجديد بياخد قيمته من الإعدادات دلوقتي
+function itemPts(flags, ex){
+  const old = ex ? ptsOf(ex) : null, out = {};
+  const unknownOld = !!(ex && !ex.pts && old.legacy);
+  out.attend = ex ? (+old.attend || 0) : (+settings.attend || 0);
+  ITEMS.forEach(([k]) => {
+    if(!flags[k]) out[k] = 0;
+    else if(ex && ex[k]) out[k] = unknownOld ? 0 : (+old[k] || 0);
+    else out[k] = +settings[k] || 0;
+  });
+  if(ex && old.legacy) out.legacy = old.legacy;
+  return out;
+}
 
 function openStudent(num){
   const st = students[num];
@@ -717,16 +792,18 @@ function openStudent(num){
 }
 
 function renderSheet(){
-  const {st, date, ex, flags} = cur;
+  const {st, date, ex, flags} = cur, oldP = ex ? ptsOf(ex) : null;
+  // قيمة البند المعروضة: لو كان متدّي قبل كده بنعرض قيمته القديمة، غير كده القيمة الحالية من الإعدادات
+  const chipVal = k => (ex && ex[k]) ? ((!ex.pts && oldP.legacy) ? "قديم" : "+" + fmt(oldP[k])) : "+" + fmt(settings[k]);
   openSheet(`
     <div class="grab"></div>
     <div class="stu"><div class="num">${esc(st.number)}</div><div><h3>${esc(st.name)}</h3><small>${esc(st.cls||"")}</small></div></div>
     ${ex ? `<div class="note">متسجل قبل كده الساعة ${esc(ex.time)} — تقدر تعدّل وتحفظ</div>` : ""}
     <div class="chips">${ITEMS.map(([k,l],i) => `
       <button class="chip ${flags[k]?"on":""} ${i===0||i===ITEMS.length-1?"wide":""}" data-k="${k}">
-        <span>${l}${k==="early" ? ` <small>(لحد ${esc(settings.earlyCutoff)})</small>` : ""}</span><em>+${fmt(settings[k])}</em>
+        <span>${l}${k==="early" ? ` <small>(لحد ${esc(settings.earlyCutoff)})</small>` : ""}</span><em>${chipVal(k)}</em>
       </button>`).join("")}</div>
-    <div class="total"><span>المجموع</span><span><b id="tot">${fmt(calc(flags))}</b> نقطة</span></div>
+    <div class="total"><span>المجموع</span><span><b id="tot">${fmt(sumPts(itemPts(flags, ex)))}</b> نقطة</span></div>
     <div class="row">
       <button class="btn primary grow" id="saveAtt">${ex ? "تحديث" : "تسجيل الحضور"}</button>
       ${ex ? `<button class="btn danger" id="delAtt">إلغاء الحضور</button>` : ""}
@@ -734,7 +811,7 @@ function renderSheet(){
     </div>`);
   $$("#sheet .chip").forEach(c => c.onclick = () => {
     const k = c.dataset.k; cur.flags[k] = !cur.flags[k]; c.classList.toggle("on", cur.flags[k]);
-    $("#tot").textContent = fmt(calc(cur.flags));
+    $("#tot").textContent = fmt(sumPts(itemPts(cur.flags, cur.ex)));
   });
   $("#shClose").onclick = closeSheet;
   $("#saveAtt").onclick = saveAtt;
@@ -748,15 +825,18 @@ function renderSheet(){
 async function saveAtt(){
   const {st, date, ex, flags} = cur, btn = $("#saveAtt"); btn.disabled = true;
   try{
+    // كل درجة بتتاخد من الإعدادات الحالية وقت الحفظ وبتتخزن مع الحضور
+    const pts = itemPts(flags, ex), total = sumPts(pts);
     await db.doc(`attendance/${date}_${st.number}`).set({
       date, number: st.number, name: st.name, cls: st.cls || "",
-      time: ex ? ex.time : nowHM(), ...flags, points: calc(flags),
+      time: ex ? ex.time : nowHM(), ...flags, pts, points: total,
       by: ex ? (ex.by || user.email) : user.email,
       updatedBy: user.email, ts: firebase.firestore.FieldValue.serverTimestamp()
     }, {merge:true});
-    toast(`${st.name} — ${fmt(calc(flags))} نقطة`); closeSheet();
+    toast(`${st.name} — ${fmt(total)} نقطة`); closeSheet();
   }catch(e){ btn.disabled = false; toast("معرفتش أسجل: " + e.code, true); }
 }
+
 
 /* =====================================================================
    6) المخدومين
@@ -890,26 +970,33 @@ function seg(w){
   $("#segRank").classList.toggle("on", w==="rank"); $("#segDay").classList.toggle("on", w==="day");
   $("#rankView").classList.toggle("hidden", w!=="rank"); $("#dayView").classList.toggle("hidden", w!=="day");
 }
-["rFrom","rTo"].forEach(i => $("#"+i).onchange = renderRank);
-$("#rClear").onclick = () => { $("#rFrom").value = $("#rTo").value = ""; renderRank(); };
+["rFrom","rTo"].forEach(i => { $("#"+i).onchange = renderRank; $("#"+i).oninput = syncRange; });
+function syncRange(){
+  const f = $("#rFrom"), tt = $("#rTo");
+  [f, tt].forEach(x => { x.classList.add("dempty"); x.dataset.ph = "كل التواريخ"; x.dataset.empty = x.value ? "0" : "1"; });
+  $("#rClear").classList.toggle("on", !f.value && !tt.value);
+}
+$("#rClear").onclick = () => { $("#rFrom").value = $("#rTo").value = ""; renderRank(); toast("بتعرض كل المدة"); };
 $("#dDate").onchange = renderDay;
 
 function aggregate(all){
   const from = all ? "" : $("#rFrom").value, to = all ? "" : $("#rTo").value, m = {};
-  Object.values(students).forEach(s => m[s.number] = {number:s.number, name:s.name, cls:s.cls||"", days:0, points:0, early:0, bible:0, notebook:0, pen:0, question:0, bonus:0, bonusCount:0, penalty:0, penaltyCount:0});
-  att.filter(a => (!from || a.date >= from) && (!to || a.date <= to)).forEach(a => {
-    const r = m[a.number] || (m[a.number] = {number:a.number, name:a.name, cls:a.cls||"", days:0, points:0, early:0, bible:0, notebook:0, pen:0, question:0, bonus:0, bonusCount:0, penalty:0, penaltyCount:0});
+  const inRange = d => d && (!from || d >= from) && (!to || d <= to);
+  const blank = (number, name, cls) => ({number, name, cls: cls || "", days:0, points:0, attend:0, early:0, bible:0, notebook:0, pen:0, legacy:0, question:0, bonus:0, bonusCount:0, penalty:0, penaltyCount:0});
+  Object.values(students).forEach(s => m[s.number] = blank(s.number, s.name, s.cls));
+  att.filter(a => inRange(a.date)).forEach(a => {
+    const r = m[a.number] || (m[a.number] = blank(a.number, a.name, a.cls)), p = ptsOf(a);
     r.days++; r.points += +a.points || 0;
-    ["early","bible","notebook","pen"].forEach(k => { if(a[k]) r[k]++; });
+    PT_KEYS.forEach(k => { r[k] += +p[k] || 0; }); r.legacy += +p.legacy || 0;
   });
   // درجات سؤال الحلقة (بتتحسب بتاريخ الإضافة اللي الأدمن حدده)
-  qscores.filter(s => s.scoreDate && (!from || s.scoreDate >= from) && (!to || s.scoreDate <= to)).forEach(s => {
-    const r = m[s.number] || (m[s.number] = {number:s.number, name:s.name || ("#" + s.number), cls:"", days:0, points:0, early:0, bible:0, notebook:0, pen:0, question:0, bonus:0, bonusCount:0, penalty:0, penaltyCount:0});
+  qscores.filter(s => inRange(s.scoreDate)).forEach(s => {
+    const r = m[s.number] || (m[s.number] = blank(s.number, s.name || ("#" + s.number)));
     const sc = +s.score || 0; r.points += sc; r.question += sc;
   });
-  // البونص (بيتحسب بتاريخ إضافته)
-  bonuses.filter(b => b.date && (!from || b.date >= from) && (!to || b.date <= to)).forEach(b => {
-    const r = m[b.number] || (m[b.number] = {number:b.number, name:b.name || ("#" + b.number), cls:"", days:0, points:0, early:0, bible:0, notebook:0, pen:0, question:0, bonus:0, bonusCount:0, penalty:0, penaltyCount:0});
+  // البونص والخصم (بيتحسبوا بتاريخ إضافتهم)
+  bonuses.filter(b => inRange(b.date)).forEach(b => {
+    const r = m[b.number] || (m[b.number] = blank(b.number, b.name || ("#" + b.number)));
     const p = +b.points || 0; r.points += p;
     if(p >= 0){ r.bonus += p; r.bonusCount++; } else { r.penalty += -p; r.penaltyCount++; }
   });
@@ -918,17 +1005,22 @@ function aggregate(all){
   rows.forEach((r,i) => { if(r.points !== last){ rk = i + 1; last = r.points; } r.rank = rk; });
   return rows;
 }
+// كل البنود بالدرجات (مش بعدد المرات) عشان مجموعهم يطابق النقاط الكلية
+const rankPills = r => `<span class="pill">حضور ${fmt(r.attend)}</span><span class="pill">بدري ${fmt(r.early)}</span><span class="pill">كتاب ${fmt(r.bible)}</span><span class="pill">كشكول ${fmt(r.notebook)}</span><span class="pill">قلم ${fmt(r.pen)}</span><span class="pill">سؤال ${fmt(r.question)}</span><span class="pill">بونص ${fmt(r.bonus)}</span>${r.penalty ? `<span class="pill neg">خصم ${fmt(r.penalty)}</span>` : ""}${r.legacy ? `<span class="pill">سابق ${fmt(r.legacy)}</span>` : ""}`;
 function renderRank(){
-  const rows = aggregate(), stu = !!(R && R.student);
+  syncRange();
+  const rows = aggregate(), stu = !!(R && R.student), fix = !!(R && R.fix);
   $("#rankList").innerHTML = rows.length ? rows.map(r => {
     const mine = stu && String(r.number) === String(user.number);
     return `
-    <div class="item ${mine ? "me" : ""}">
+    <div class="item ${mine ? "me" : ""} ${fix ? "click" : ""}" ${fix ? `data-fix="${esc(r.number)}"` : ""}>
       <div class="rank">${r.rank}</div>
       <div class="t"><b>${esc(r.name)}${(!stu || mine) ? ` <small>#${esc(r.number)}</small>` : ""}</b>
-        ${stu ? "" : `<small><span class="pill">حضور ${r.days}</span><span class="pill">بدري ${r.early}</span><span class="pill">كتاب ${r.bible}</span><span class="pill">كشكول ${r.notebook}</span><span class="pill">قلم ${r.pen}</span><span class="pill">سؤال ${fmt(r.question)}</span><span class="pill">بونص ${fmt(r.bonus)}${r.bonusCount > 1 ? " ×" + r.bonusCount : ""}</span>${r.penalty ? `<span class="pill neg">خصم ${fmt(r.penalty)}${r.penaltyCount > 1 ? " ×" + r.penaltyCount : ""}</span>` : ""}</small>`}</div>
+        ${stu ? "" : `<small>${rankPills(r)}</small>`}</div>
       <div class="pts">${fmt(r.points)}<small>نقطة</small></div>
     </div>`; }).join("") : `<div class="empty">مفيش بيانات لسه.</div>`;
+  $("#fixHint").classList.toggle("hidden", !fix);
+  if(fix) $$("#rankList [data-fix]").forEach(i => i.onclick = () => fixOpen(i.dataset.fix));
 }
 function renderHome(){
   if(!user || !R || !R.student) return;
@@ -946,8 +1038,9 @@ function renderHome(){
   }
 }
 $("#rCsv").onclick = () => {
-  const rows = aggregate(), head = ["الرقم","الاسم","الفصل","أيام الحضور","بدري","الكتاب المقدس","الكشكول","القلم","السؤال","بونص","خصم","مجموع النقاط"];
-  const csv = [head, ...rows.map(r => [r.number, r.name, r.cls, r.days, r.early, r.bible, r.notebook, r.pen, r.question, r.bonus, r.penalty, r.points])]
+  const rows = aggregate(), hasLeg = rows.some(r => r.legacy);
+  const head = ["الرقم","الاسم","الفصل","عدد أيام الحضور","حضور","بدري","الكتاب المقدس","الكشكول","القلم","سؤال","بونص","خصم", ...(hasLeg ? ["سابق"] : []), "مجموع النقاط"];
+  const csv = [head, ...rows.map(r => [r.number, r.name, r.cls, r.days, r.attend, r.early, r.bible, r.notebook, r.pen, r.question, r.bonus, r.penalty, ...(hasLeg ? [r.legacy] : []), r.points])]
     .map(l => l.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\r\n");
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob(["\ufeff" + csv], {type:"text/csv;charset=utf-8"}));
@@ -961,8 +1054,8 @@ $("#rPdf").onclick = () => {
   const area = $("#printArea"); area.className = "report";
   area.innerHTML = `
     <div class="rh"><img src="${LOGO}" alt=""><div><h1>مدرسة القديس بولس للكتاب المقدس</h1><p>ترتيب النقاط — ${esc(period)}</p><p class="sm">تاريخ الطباعة: ${todayStr()}</p></div></div>
-    <table class="rt"><thead><tr><th>#</th><th>الرقم</th><th>الاسم</th><th>أيام الحضور</th><th>بدري</th><th>الكتاب</th><th>الكشكول</th><th>القلم</th><th>السؤال</th><th>بونص</th><th>خصم</th><th>النقاط</th></tr></thead>
-    <tbody>${rows.map((r,i) => `<tr><td>${r.rank}</td><td>${esc(r.number)}</td><td class="nm">${esc(r.name)}</td><td>${r.days}</td><td>${r.early}</td><td>${r.bible}</td><td>${r.notebook}</td><td>${r.pen}</td><td>${fmt(r.question)}</td><td>${fmt(r.bonus)}</td><td>${fmt(r.penalty)}</td><td class="pt">${fmt(r.points)}</td></tr>`).join("")}</tbody></table>`;
+    <table class="rt"><thead><tr><th>#</th><th>الرقم</th><th>الاسم</th><th>حضور</th><th>بدري</th><th>الكتاب</th><th>الكشكول</th><th>القلم</th><th>سؤال</th><th>بونص</th><th>خصم</th>${rows.some(r => r.legacy) ? "<th>سابق</th>" : ""}<th>النقاط</th></tr></thead>
+    <tbody>${rows.map(r => `<tr><td>${r.rank}</td><td>${esc(r.number)}</td><td class="nm">${esc(r.name)}</td><td>${fmt(r.attend)}</td><td>${fmt(r.early)}</td><td>${fmt(r.bible)}</td><td>${fmt(r.notebook)}</td><td>${fmt(r.pen)}</td><td>${fmt(r.question)}</td><td>${fmt(r.bonus)}</td><td>${fmt(r.penalty)}</td>${rows.some(x => x.legacy) ? `<td>${fmt(r.legacy)}</td>` : ""}<td class="pt">${fmt(r.points)}</td></tr>`).join("")}</tbody></table>`;
   toast("من نافذة الطباعة اختار Save as PDF", false, 5000);
   (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(() => window.print(), 300));
 };
@@ -1001,9 +1094,10 @@ const TYPES = {
   pamphlet:["بامفلت", '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h5M9.5 16h5"/>'],
   video:["فيديو", '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.5 9.5v5l4-2.5z"/>'],
   folder:["فولدر Drive", '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'],
+  pdf:["PDF (جوه التطبيق)", '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h5M9.5 16h5"/>'],
   link:["رابط", '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>']
 };
-const TYPE_RANK = {pamphlet:0, video:1, folder:2, link:3};
+const TYPE_RANK = {pdf:0, pamphlet:0, video:1, folder:2, link:3};
 const icon = t => `<div class="ico"><svg viewBox="0 0 24 24">${(TYPES[t] || TYPES.link)[1]}</svg></div>`;
 
 // يقبل http/https بس (حماية من javascript: وغيره)
@@ -1050,13 +1144,17 @@ function renderData(){
       ${fu ? `<a class="folderbtn" href="${esc(fu)}" target="_blank" rel="noopener noreferrer"><div class="ico"><svg viewBox="0 0 24 24">${TYPES.folder[1]}</svg></div><div class="t"><b>فولدر الدرس على Google Drive</b><small>${esc(hostOf(fu))} — دوس عشان تفتحه</small></div></a>` : ""}
       ${(ms.length || !fu) ? `<div class="panel">${ms.length ? ms.map(m => `
         <div class="item">
-          <a class="mat" href="${esc(safeUrl(m.url) || "#")}" target="_blank" rel="noopener noreferrer">${icon(m.type)}
-            <div class="t"><b>${esc(m.title)}</b><small>${esc((TYPES[m.type] || TYPES.link)[0])} — ${esc(hostOf(m.url))}</small></div></a>
+          ${m.type === "pdf"
+            ? `<div class="mat" role="button" tabindex="0" data-pdf="${esc(m.id)}">${icon("pdf")}
+            <div class="t"><b>${esc(m.title)}</b><small>PDF — ${esc(fmtSize(m.size))} · بيتفتح جوه التطبيق</small></div></div>`
+            : `<a class="mat" href="${esc(safeUrl(m.url) || "#")}" target="_blank" rel="noopener noreferrer">${icon(m.type)}
+            <div class="t"><b>${esc(m.title)}</b><small>${esc((TYPES[m.type] || TYPES.link)[0])} — ${esc(hostOf(m.url))}</small></div></a>`}
           ${(isAdmin || m.addedBy === user.email) ? `<button class="btn sm ghost" data-m="${esc(m.id)}">تعديل</button>` : ""}
         </div>`).join("") : `<div class="empty">الدرس ده فاضي. دوس + تحت وضيف البامفلت أو الفيديوهات أو لينك فولدر Drive.</div>`}</div>` : ""}`;
     $("#dBack").onclick = () => { openLesson = null; renderData(); window.scrollTo(0,0); };
     if($("#dEdit")) $("#dEdit").onclick = () => lessonForm(openLesson);
     $$("#dataView [data-m]").forEach(b => b.onclick = () => materialForm(b.dataset.m));
+    $$("#dataView [data-pdf]").forEach(b => b.onclick = () => openPdf(b.dataset.pdf));
   }
   updateFab();
 }
@@ -1096,49 +1194,195 @@ function lessonForm(id){
     if(!confirm("تحذف الدرس وكل الملفات اللي فيه؟")) return;
     try{
       const b = db.batch();
-      materials.filter(m => m.lessonId === id).forEach(m => b.delete(db.doc("materials/" + m.id)));
+      materials.filter(m => m.lessonId === id).forEach(m => {
+        b.delete(db.doc("materials/" + m.id));
+        if(m.type === "pdf") for(let i = 0; i < (m.chunks || 0); i++) b.delete(db.doc("pdfchunks/" + m.id + "_" + i));
+      });
       b.delete(db.doc("lessons/" + id)); await b.commit();
       openLesson = null; toast("اتحذف"); closeSheet(); renderData();
     }catch(e){ toast("معرفتش أحذف: " + e.code, true); }
   };
 }
 
+const PDF_MAX = 5 * 1024 * 1024, PDF_CHUNK = 600000;
+const fmtSize = b => !b ? "" : (b >= 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB");
+const fileToBase64 = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1] || ""); r.onerror = () => rej(r.error); r.readAsDataURL(f); });
+
 function materialForm(id){
   const m = id ? materials.find(x => x.id === id) : {title:"", url:"", type:"pamphlet"};
-  let manual = !!id;
+  if(!m) return;
+  const pdfEdit = !!(id && m.type === "pdf");
+  let manual = !!id, isPdf = false, busy = false;
   openSheet(`
     <div class="grab"></div>
     <h2 style="margin:0 0 6px;color:var(--brown)">${id ? "تعديل ملف" : "ملف جديد"} <small style="font-weight:400;color:var(--muted)">— ${esc((lessons[openLesson] || {}).title || "")}</small></h2>
-    <label class="f">اللينك</label>
-    <input type="text" id="mUrl" class="ltr" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="https://drive.google.com/..." value="${esc(m.url)}">
+    ${!id ? `<div class="seg" style="margin-top:8px"><button id="mModeLink" class="on">لينك</button><button id="mModePdf">رفع PDF</button></div>` : ""}
+    <div id="secLink" class="${pdfEdit ? "hidden" : ""}">
+      <label class="f" style="margin-top:0">اللينك</label>
+      <input type="text" id="mUrl" class="ltr" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="https://drive.google.com/..." value="${esc(m.url)}">
+    </div>
+    <div id="secPdf" class="hidden">
+      <label class="f" style="margin-top:0">ملف PDF</label>
+      <input type="file" id="mFile" accept="application/pdf,.pdf">
+      <div class="hint">الحد الأقصى 5 ميجا. الملف بيتخزن جوه التطبيق وبيتفتح في قارئ داخلي من غير Drive.</div>
+    </div>
     <label class="f">العنوان</label><input type="text" id="mTitle" placeholder="مثال: بامفلت الدرس" value="${esc(m.title)}">
-    <label class="f">النوع</label>
-    <select id="mType">${Object.entries(TYPES).map(([k,v]) => `<option value="${k}" ${m.type === k ? "selected" : ""}>${v[0]}</option>`).join("")}</select>
-    <div class="hint">ارفع الملف أو الفيديو على Google Drive واختار Share ← Anyone with the link (أو شاركه مع الخدام)، وبعدين الصق اللينك هنا. ممكن تحط لينك فولدر كامل فيه كل داتا الدرس.</div>
+    <div id="secType" class="${pdfEdit ? "hidden" : ""}">
+      <label class="f">النوع</label>
+      <select id="mType">${Object.entries(TYPES).filter(([k]) => k !== "pdf").map(([k,v]) => `<option value="${k}" ${m.type === k ? "selected" : ""}>${v[0]}</option>`).join("")}</select>
+      <div class="hint">ارفع الملف أو الفيديو على Google Drive واختار Share ← Anyone with the link (أو شاركه مع الخدام)، وبعدين الصق اللينك هنا. ممكن تحط لينك فولدر كامل فيه كل داتا الدرس.</div>
+    </div>
+    <div id="mProg" class="muted" style="margin-top:8px"></div>
     <div class="row" style="margin-top:14px">
       <button class="btn primary grow" id="mSave">حفظ</button>
       ${id ? '<button class="btn danger" id="mDel">حذف</button>' : ""}
       <button class="btn ghost" id="mClose">إغلاق</button>
     </div>`);
+  const prog = s => { const e = $("#mProg"); if(e) e.textContent = s; };
+  const setMode = pdf => {
+    isPdf = pdf;
+    $("#mModeLink").classList.toggle("on", !pdf); $("#mModePdf").classList.toggle("on", pdf);
+    $("#secLink").classList.toggle("hidden", pdf); $("#secType").classList.toggle("hidden", pdf); $("#secPdf").classList.toggle("hidden", !pdf);
+  };
+  if(!id){ $("#mModeLink").onclick = () => setMode(false); $("#mModePdf").onclick = () => setMode(true); }
   $("#mClose").onclick = closeSheet;
   $("#mUrl").oninput = () => { if(manual) return; const u = safeUrl($("#mUrl").value); if(u) $("#mType").value = detectType(u); };
   $("#mType").onchange = () => { manual = true; };
   $("#mSave").onclick = async () => {
-    const url = safeUrl($("#mUrl").value), type = $("#mType").value;
-    if(!url){ toast("اللينك مش صحيح", true); return; }
-    const title = $("#mTitle").value.trim() || TYPES[type][0];
+    if(busy) return;
+    const titleIn = $("#mTitle").value.trim();
     try{
-      if(id) await db.doc("materials/" + id).set({title, url, type}, {merge:true});
-      else await db.collection("materials").add({lessonId: openLesson, title, url, type, addedBy: user.email, ts: firebase.firestore.FieldValue.serverTimestamp()});
-      toast("اتحفظ"); closeSheet();
-    }catch(e){ toast("معرفتش أحفظ: " + e.code, true); }
+      if(pdfEdit){ await db.doc("materials/" + id).set({title: titleIn || "PDF"}, {merge:true}); toast("اتحفظ"); closeSheet(); return; }
+      if(!isPdf){
+        const url = safeUrl($("#mUrl").value), type = $("#mType").value;
+        if(!url){ toast("اللينك مش صحيح", true); return; }
+        const title = titleIn || TYPES[type][0];
+        if(id) await db.doc("materials/" + id).set({title, url, type}, {merge:true});
+        else await db.collection("materials").add({lessonId: openLesson, title, url, type, addedBy: user.email, ts: firebase.firestore.FieldValue.serverTimestamp()});
+        toast("اتحفظ"); closeSheet(); return;
+      }
+    }catch(e){ toast("معرفتش أحفظ: " + e.code, true); return; }
+    // ---- رفع PDF ----
+    const file = $("#mFile").files && $("#mFile").files[0];
+    if(!file){ toast("اختار ملف PDF الأول", true); return; }
+    if(!(file.type === "application/pdf" || /\.pdf$/i.test(file.name))){ toast("لازم الملف يكون PDF", true); return; }
+    if(file.size > PDF_MAX){ toast("الملف أكبر من 5 ميجا — ضغطه أو حط لينك Drive", true); return; }
+    busy = true; $("#mSave").disabled = true; prog("بيجهّز الملف…");
+    let mid = null, n = 0;
+    try{
+      const b64 = await fileToBase64(file);
+      if(!b64.startsWith("JVBERi")) throw {code: "not-pdf"};
+      const chunks = []; for(let i = 0; i < b64.length; i += PDF_CHUNK) chunks.push(b64.slice(i, i + PDF_CHUNK));
+      n = chunks.length;
+      const ref = db.collection("materials").doc(); mid = ref.id;
+      for(let i = 0; i < n; i += 3){
+        const b = db.batch();
+        chunks.slice(i, i + 3).forEach((c, j) => b.set(db.doc("pdfchunks/" + mid + "_" + (i + j)), {mid, idx: i + j, data: c}));
+        await b.commit(); prog(`بيرفع… ${Math.min(i + 3, n)}/${n}`);
+      }
+      // السجل بيتكتب في الآخر عشان الرفع الناقص مايظهرش
+      await ref.set({lessonId: openLesson, title: titleIn || file.name.replace(/\.pdf$/i, ""), type: "pdf", size: file.size, chunks: n, addedBy: user.email, ts: firebase.firestore.FieldValue.serverTimestamp()});
+      toast("اتحفظ — الملف اتخزن جوه التطبيق"); closeSheet();
+    }catch(e){
+      if(mid){ try{ const b = db.batch(); for(let i = 0; i < n; i++) b.delete(db.doc("pdfchunks/" + mid + "_" + i)); await b.commit(); }catch(_){} }
+      busy = false; const sv = $("#mSave"); if(sv) sv.disabled = false; prog("");
+      toast(e && e.code === "not-pdf" ? "الملف ده مش PDF سليم" : "معرفتش أرفع الملف: " + ((e && e.code) || ""), true);
+    }
   };
   if(id) $("#mDel").onclick = async () => {
     if(!confirm("تحذف الملف ده؟")) return;
-    try{ await db.doc("materials/" + id).delete(); toast("اتحذف"); closeSheet(); }
-    catch(e){ toast("معرفتش أحذف: " + e.code, true); }
+    try{
+      const b = db.batch(); b.delete(db.doc("materials/" + id));
+      if(m.type === "pdf") for(let i = 0; i < (m.chunks || 0); i++) b.delete(db.doc("pdfchunks/" + id + "_" + i));
+      await b.commit(); toast("اتحذف"); closeSheet();
+    }catch(e){ toast("معرفتش أحذف: " + e.code, true); }
   };
 }
+
+/* ---------- قارئ PDF جوه التطبيق (pdf.js بيتحمّل أول ما حد يفتح ملف) ---------- */
+let pdfDoc = null, pdfZoom = 1, pdfObs = null, pdfToken = 0, pdfLayoutToken = 0;
+function loadPdfJs(){
+  if(window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  return new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    s.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"; res(window.pdfjsLib); };
+    s.onerror = () => rej(new Error("lib"));
+    document.head.appendChild(s);
+  });
+}
+function closePdf(){
+  pdfToken++; pdfLayoutToken++;
+  if(pdfObs){ pdfObs.disconnect(); pdfObs = null; }
+  if(pdfDoc){ try{ pdfDoc.destroy(); }catch(e){} pdfDoc = null; }
+  $("#pdfView").classList.add("hidden"); $("#pdfBody").innerHTML = ""; document.body.style.overflow = "";
+}
+async function openPdf(id){
+  const m = materials.find(x => x.id === id); if(!m) return;
+  const token = ++pdfToken;
+  $("#pdfTitle").textContent = m.title; $("#pdfPg").textContent = "";
+  $("#pdfBody").innerHTML = `<div class="pdfmsg">بيحمّل الملف…</div>`;
+  $("#pdfView").classList.remove("hidden"); document.body.style.overflow = "hidden";
+  try{
+    const [lib, snap] = await Promise.all([loadPdfJs(), db.collection("pdfchunks").where("mid", "==", id).get()]);
+    if(token !== pdfToken) return;
+    const parts = []; snap.forEach(d => { const x = d.data(); parts[x.idx] = x.data; });
+    for(let i = 0; i < (m.chunks || 0); i++) if(!parts[i]) throw new Error("incomplete");
+    const bin = atob(parts.join("")), bytes = new Uint8Array(bin.length);
+    for(let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const doc = await lib.getDocument({data: bytes}).promise;
+    if(token !== pdfToken){ try{ doc.destroy(); }catch(e){} return; }
+    pdfDoc = doc; pdfZoom = 1; await layoutPdf();
+  }catch(e){
+    if(token === pdfToken) $("#pdfBody").innerHTML = `<div class="pdfmsg">معرفتش أفتح الملف${e && e.message === "incomplete" ? " (الملف مش كامل)" : ""}</div>`;
+  }
+}
+async function layoutPdf(){
+  const body = $("#pdfBody"), token = ++pdfLayoutToken, doc = pdfDoc; if(!doc) return;
+  if(pdfObs){ pdfObs.disconnect(); pdfObs = null; }
+  body.innerHTML = ""; const wrap = document.createElement("div"); wrap.className = "pdfpages"; body.appendChild(wrap);
+  const width = Math.max(200, body.clientWidth - 16) * pdfZoom, pages = [];
+  for(let n = 1; n <= doc.numPages; n++){
+    const page = await doc.getPage(n); if(token !== pdfLayoutToken) return;
+    const v1 = page.getViewport({scale: 1}), scale = width / v1.width;
+    const div = document.createElement("div"); div.className = "pgwrap"; div.dataset.n = n;
+    div.style.width = width + "px"; div.style.height = (v1.height * scale) + "px";
+    wrap.appendChild(div); pages.push({div, page, scale, w: v1.width, h: v1.height});
+  }
+  const render = async p => {
+    if(p.rendering || p.canvas) return; p.rendering = true;
+    const vp = p.page.getViewport({scale: p.scale});
+    let out = Math.min(window.devicePixelRatio || 1, 2);
+    if(vp.width * vp.height * out * out > 8e6) out = Math.sqrt(8e6 / (vp.width * vp.height));   // حد آمن لذاكرة الموبايل
+    const c = document.createElement("canvas"); c.width = Math.floor(vp.width * out); c.height = Math.floor(vp.height * out);
+    try{ await p.page.render({canvasContext: c.getContext("2d"), viewport: vp, transform: out !== 1 ? [out,0,0,out,0,0] : null}).promise; }catch(e){}
+    p.rendering = false;
+    if(token !== pdfLayoutToken || p.visible === false) return;
+    p.div.appendChild(c); p.canvas = c;
+  };
+  const unrender = p => { if(p.canvas){ p.canvas.remove(); p.canvas.width = 0; p.canvas = null; } };
+  if("IntersectionObserver" in window){
+    pdfObs = new IntersectionObserver(es => es.forEach(e => {
+      const p = pages[+e.target.dataset.n - 1]; p.visible = e.isIntersecting; if(e.isIntersecting) render(p); else unrender(p);
+    }), {root: body, rootMargin: "1200px 0px"});
+    pages.forEach(p => pdfObs.observe(p.div));
+  }else pages.forEach(p => render(p));
+  const upd = () => {
+    const mid = body.scrollTop + body.clientHeight / 2; let c = 1;
+    for(const p of pages){ if(p.div.offsetTop <= mid) c = +p.div.dataset.n; else break; }
+    $("#pdfPg").textContent = c + " / " + pages.length;
+  };
+  body.onscroll = () => requestAnimationFrame(upd); upd();
+}
+async function zoomPdf(d){
+  if(!pdfDoc) return;
+  const body = $("#pdfBody"), r = body.scrollTop / Math.max(1, body.scrollHeight);
+  pdfZoom = Math.min(3, Math.max(0.5, +(pdfZoom + d).toFixed(2)));
+  await layoutPdf(); body.scrollTop = r * body.scrollHeight;
+}
+$("#pdfClose").onclick = closePdf;
+$("#pdfPlus").onclick = () => zoomPdf(0.25);
+$("#pdfMinus").onclick = () => zoomPdf(-0.25);
 
 /* =====================================================================
    10) سؤال الحلقة
@@ -1372,6 +1616,165 @@ function gradeForm(id, num){
     if(!confirm("تشيل الدرجة؟")) return;
     try{ await db.doc("qscores/" + id + "_" + num).delete(); toast("اتشالت الدرجة"); closeSheet(); }
     catch(e){ toast("معرفتش أشيل: " + e.code, true); }
+  };
+}
+
+/* =====================================================================
+   11) تصحيح الدرجات (Role 1 بس): من تاب Reports دوس على اسم المخدوم
+   ===================================================================== */
+const PT_LABELS = {attend:"حضور", early:"بدري", bible:"كتاب", notebook:"كشكول", pen:"قلم"};
+const sgn = n => (+n < 0 ? "−" : "+") + fmt(Math.abs(+n));
+async function logFix(type, action, st, before, after){
+  try{ await db.collection("scorelog").add({type, action, number:String(st.number), name:st.name || "", before:JSON.stringify(before || null), after:JSON.stringify(after || null), by:user.email, ts:SERVER_TS()}); }catch(e){}
+}
+const stOf = num => students[num] || {number:String(num), name:"#" + num};
+
+function fixOpen(num){
+  if(!R || !R.fix) return;
+  const st = stOf(num), N = String(num), total = (aggregate(true).find(r => String(r.number) === N) || {}).points || 0;
+  const A = att.filter(a => String(a.number) === N).sort((a,b) => (b.date || "").localeCompare(a.date || ""));
+  const Q = qscores.filter(s => String(s.number) === N).sort((a,b) => (b.scoreDate || "").localeCompare(a.scoreDate || ""));
+  const B = bonuses.filter(b => String(b.number) === N).sort((a,b) => (b.date || "").localeCompare(a.date || ""));
+  const edited = o => o.editedBy ? `<span class="ed">اتعدّل بواسطة ${esc(o.editedBy)}</span>` : "";
+  openSheet(`
+    <div class="grab"></div>
+    <div class="stu"><div class="num">${esc(st.number)}</div><div><h3>${esc(st.name)}</h3><small>سجل النقاط — المجموع ${fmt(total)}</small></div></div>
+    <div class="fxsec">الحضور</div>
+    ${A.length ? A.map(a => { const p = ptsOf(a);
+      return `<div class="fxrow"><div class="t"><b>${esc(a.date)}</b> <small>${PT_KEYS.filter(k => +p[k]).map(k => PT_LABELS[k] + " " + fmt(p[k])).join(" · ")}${p.legacy ? " · سابق " + fmt(p.legacy) : ""}</small>${edited(a)}</div>
+        <div class="v">${fmt(a.points)}</div><button class="btn sm ghost" data-fa="${esc(a.id)}">تعديل</button></div>`; }).join("") : `<div class="muted" style="padding:6px 4px">مفيش حضور مسجل.</div>`}
+    <div class="fxsec">سؤال الحلقة</div>
+    ${Q.length ? Q.map(s => { const q = questions[s.qid];
+      return `<div class="fxrow"><div class="t"><b>${esc(s.scoreDate || "")}</b><small>${esc(snip(q ? q.text : "سؤال محذوف", 50))}</small>${edited(s)}</div>
+        <div class="v">${fmt(s.score)}</div><button class="btn sm ghost" data-fq="${esc(s.id)}">تعديل</button></div>`; }).join("") : `<div class="muted" style="padding:6px 4px">مفيش درجات أسئلة.</div>`}
+    <div class="fxsec">بونص / خصم</div>
+    ${B.length ? B.map(b => `<div class="fxrow"><div class="t"><b>${esc(b.date || "")}</b><small>${b.by ? "بواسطة " + esc(b.by) : ""}</small>${edited(b)}</div>
+        <div class="v ${b.points < 0 ? "neg" : ""}">${sgn(b.points)}</div><button class="btn sm ghost" data-fb="${esc(b.id)}">تعديل</button></div>`).join("") : `<div class="muted" style="padding:6px 4px">مفيش بونص أو خصم.</div>`}
+    <div class="row" style="margin-top:14px"><button class="btn ghost grow" id="fxClose">إغلاق</button></div>`);
+  $("#fxClose").onclick = closeSheet;
+  $$("#sheet [data-fa]").forEach(b => b.onclick = () => fixAtt(b.dataset.fa, N));
+  $$("#sheet [data-fq]").forEach(b => b.onclick = () => fixQ(b.dataset.fq, N));
+  $$("#sheet [data-fb]").forEach(b => b.onclick = () => fixBonus(b.dataset.fb, N));
+}
+
+/* ---- تعديل حضور: درجة كل بند + التاريخ ---- */
+function fixAtt(id, N){
+  const a = att.find(x => x.id === id); if(!a) return fixOpen(N);
+  const st = stOf(N), p = ptsOf(a);
+  openSheet(`
+    <div class="grab"></div>
+    <div class="stu"><div class="num">${esc(st.number)}</div><div><h3>${esc(st.name)}</h3><small>تعديل حضور</small></div></div>
+    <label class="f" style="margin-top:0">التاريخ</label><input type="date" id="fxDate" value="${esc(a.date)}">
+    <label class="f">درجة كل بند</label>
+    <div class="fxgrid">${PT_KEYS.map(k => `<div><label>${PT_LABELS[k]}</label><input type="number" inputmode="decimal" step="0.5" id="fx_${k}" value="${esc(+p[k] || 0)}"></div>`).join("")}
+      ${p.legacy ? `<div><label>سابق</label><input type="number" inputmode="decimal" step="0.5" id="fx_legacy" value="${esc(p.legacy)}"></div>` : ""}</div>
+    <div class="total" style="margin-top:12px"><span>المجموع</span><span><b id="fxTot">${fmt(a.points)}</b> نقطة</span></div>
+    <div class="row">
+      <button class="btn primary grow" id="fxSave">حفظ</button>
+      <button class="btn danger" id="fxDel">حذف الحضور</button>
+      <button class="btn ghost" id="fxBack">رجوع</button>
+    </div>`);
+  const read = () => { const o = {}; PT_KEYS.forEach(k => o[k] = parseFloat($("#fx_" + k).value) || 0); if($("#fx_legacy")) o.legacy = parseFloat($("#fx_legacy").value) || 0; return o; };
+  $$("#sheet input[type=number]").forEach(i => i.oninput = () => { $("#fxTot").textContent = fmt(sumPts(read())); });
+  $("#fxBack").onclick = () => fixOpen(N);
+  $("#fxSave").onclick = async () => {
+    const pts = read(), date = $("#fxDate").value;
+    if(!date){ toast("اختار التاريخ", true); return; }
+    if(PT_KEYS.some(k => pts[k] < 0) || (pts.legacy || 0) < 0){ toast("الدرجات مينفعش تبقى بالسالب", true); return; }
+    const newId = `${date}_${N}`;
+    if(newId !== id && att.some(x => x.id === newId)){ toast("فيه حضور متسجل للمخدوم ده في التاريخ ده", true); return; }
+    const total = sumPts(pts);
+    const data = {...a, date, pts, points: total, early: pts.early > 0, bible: pts.bible > 0, notebook: pts.notebook > 0, pen: pts.pen > 0, editedBy: user.email, editedAt: SERVER_TS()};
+    delete data.id;
+    try{
+      const b = db.batch();
+      b.set(db.doc("attendance/" + newId), data, newId === id ? {merge:true} : undefined);
+      if(newId !== id) b.delete(db.doc("attendance/" + id));
+      await b.commit();
+      logFix("attendance", "edit", st, {date: a.date, pts: ptsOf(a), points: a.points}, {date, pts, points: total});
+      toast("اتصحح الحضور — الترتيب اتحدّث");
+    }catch(e){ toast("معرفتش أحفظ: " + e.code, true); return; }
+    setTimeout(() => fixOpen(N), 0);
+  };
+  $("#fxDel").onclick = async () => {
+    if(!confirm("تحذف الحضور ده؟ النقاط هتتشال من الترتيب.")) return;
+    try{ await db.doc("attendance/" + id).delete(); logFix("attendance", "delete", st, {date: a.date, pts: ptsOf(a), points: a.points}, null); toast("اتحذف الحضور"); }
+    catch(e){ toast("معرفتش أحذف: " + e.code, true); return; }
+    setTimeout(() => fixOpen(N), 0);
+  };
+}
+
+/* ---- تعديل درجة سؤال ---- */
+function fixQ(id, N){
+  const s = qscores.find(x => x.id === id); if(!s) return fixOpen(N);
+  const st = stOf(N), q = questions[s.qid];
+  openSheet(`
+    <div class="grab"></div>
+    <div class="stu"><div class="num">${esc(st.number)}</div><div><h3>${esc(st.name)}</h3><small>تعديل درجة سؤال</small></div></div>
+    <div class="qbox qtext">${esc(q ? q.text : "سؤال محذوف")}</div>
+    <div class="grid2">
+      <div><label class="f" style="margin-top:0">الدرجة</label><input type="number" inputmode="decimal" step="0.5" min="0" id="fqScore" value="${esc(s.score)}"></div>
+      <div><label class="f" style="margin-top:0">تتضاف في تاريخ</label><input type="date" id="fqDate" value="${esc(s.scoreDate || "")}"></div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn primary grow" id="fqSave">حفظ</button>
+      <button class="btn danger" id="fqDel">شيل الدرجة</button>
+      <button class="btn ghost" id="fqBack">رجوع</button>
+    </div>`);
+  $("#fqBack").onclick = () => fixOpen(N);
+  $("#fqSave").onclick = async () => {
+    const score = parseFloat($("#fqScore").value), scoreDate = $("#fqDate").value;
+    if(!(score >= 0)){ toast("اكتب الدرجة", true); return; }
+    if(!scoreDate){ toast("اختار التاريخ", true); return; }
+    try{
+      await db.doc("qscores/" + id).set({score, scoreDate, editedBy: user.email, editedAt: SERVER_TS()}, {merge:true});
+      logFix("qscore", "edit", st, {score: s.score, scoreDate: s.scoreDate}, {score, scoreDate});
+      toast("اتصححت الدرجة — الترتيب اتحدّث");
+    }catch(e){ toast("معرفتش أحفظ: " + e.code, true); return; }
+    setTimeout(() => fixOpen(N), 0);
+  };
+  $("#fqDel").onclick = async () => {
+    if(!confirm("تشيل درجة السؤال دي؟")) return;
+    try{ await db.doc("qscores/" + id).delete(); logFix("qscore", "delete", st, {score: s.score, scoreDate: s.scoreDate}, null); toast("اتشالت الدرجة"); }
+    catch(e){ toast("معرفتش أشيل: " + e.code, true); return; }
+    setTimeout(() => fixOpen(N), 0);
+  };
+}
+
+/* ---- تعديل بونص / خصم ---- */
+function fixBonus(id, N){
+  const b0 = bonuses.find(x => x.id === id); if(!b0) return fixOpen(N);
+  const st = stOf(N);
+  openSheet(`
+    <div class="grab"></div>
+    <div class="stu"><div class="num">${esc(st.number)}</div><div><h3>${esc(st.name)}</h3><small>تعديل ${b0.points < 0 ? "خصم" : "بونص"}</small></div></div>
+    <div class="grid2">
+      <div><label class="f" style="margin-top:0">النقط (سالب = خصم)</label><input type="number" inputmode="decimal" step="0.5" id="fbPts" value="${esc(b0.points)}"></div>
+      <div><label class="f" style="margin-top:0">التاريخ</label><input type="date" id="fbDate" value="${esc(b0.date || "")}"></div>
+    </div>
+    <div class="hint">على الآيفون كيبورد الأرقام مفيهوش علامة سالب. لو عايز تحوّله لخصم احذفه وسجّله من Students بزرار −.</div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn primary grow" id="fbSave">حفظ</button>
+      <button class="btn danger" id="fbDel">حذف</button>
+      <button class="btn ghost" id="fbBack">رجوع</button>
+    </div>`);
+  $("#fbBack").onclick = () => fixOpen(N);
+  $("#fbSave").onclick = async () => {
+    const points = parseFloat($("#fbPts").value), date = $("#fbDate").value;
+    if(!points){ toast("اكتب رقم مش صفر", true); return; }
+    if(!date){ toast("اختار التاريخ", true); return; }
+    try{
+      await db.doc("bonuses/" + id).set({points, date, editedBy: user.email, editedAt: SERVER_TS()}, {merge:true});
+      logFix("bonus", "edit", st, {points: b0.points, date: b0.date}, {points, date});
+      toast("اتصحح — الترتيب اتحدّث");
+    }catch(e){ toast("معرفتش أحفظ: " + e.code, true); return; }
+    setTimeout(() => fixOpen(N), 0);
+  };
+  $("#fbDel").onclick = async () => {
+    if(!confirm("تحذف البونص/الخصم ده؟")) return;
+    try{ await db.doc("bonuses/" + id).delete(); logFix("bonus", "delete", st, {points: b0.points, date: b0.date}, null); toast("اتحذف"); }
+    catch(e){ toast("معرفتش أحذف: " + e.code, true); return; }
+    setTimeout(() => fixOpen(N), 0);
   };
 }
 </script>
