@@ -310,6 +310,7 @@ input.ltr{direction:ltr;text-align:left}
       <div class="err" id="lErr"></div>
       <button class="btn primary block" style="margin-top:10px" type="submit">دخول</button>
     </form>
+    <p class="muted" style="margin:12px 0 0;font-size:12px;line-height:1.7">الحساب بيتربط بأول موبايل تدخل منه. نزّل التطبيق على الشاشة الرئيسية الأول وبعدين سجّل دخول.</p>
   </div>
 </section>
 
@@ -434,6 +435,28 @@ input.ltr{direction:ltr;text-align:left}
         <button class="btn primary block" id="saveSettings" style="margin-top:12px">حفظ الإعدادات</button>
       </div>
 
+    
+      <div class="panel fix-only hidden">
+        <h2>الأجهزة المربوطة <small id="devCount"></small></h2>
+        <input type="search" id="devSearch" placeholder="دوّر بالاسم">
+        <div id="devList" style="margin-top:6px"></div>
+        <div class="hint">كل حساب (ما عدا Role 1) بيتربط بأول موبايل يدخل منه. لو حد غيّر موبايله أو مسح بيانات التطبيق، دوس Reset وخلّيه يدخل من الموبايل الجديد على طول.</div>
+      </div>
+
+      <div class="panel fix-only hidden">
+        <h2>إضافة / تغيير مستخدم</h2>
+        <label class="f" style="margin-top:0">اسم المستخدم</label><input type="text" id="gUser" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <label class="f">كلمة السر</label>
+        <div class="row" style="flex-wrap:nowrap"><input type="text" id="gPass" class="ltr" autocapitalize="off" autocorrect="off" spellcheck="false" style="flex:1;min-width:0"><button class="btn gold sm" id="gRand">عشوائي</button></div>
+        <div class="grid2">
+          <div><label class="f">الدور</label><select id="gRole"><option value="3">3 — Servant</option><option value="2">2 — Family Leader</option><option value="4">4 — Student</option><option value="1">1 — Admin</option></select></div>
+          <div id="gNumBox" class="hidden"><label class="f">رقم الطالب</label><input type="text" id="gNum" inputmode="numeric"></div>
+        </div>
+        <button class="btn primary block" id="gMake" style="margin-top:12px">اعمل السطر</button>
+        <textarea id="gOut" readonly dir="ltr" style="margin-top:10px;min-height:96px;font-size:12px" placeholder="هيظهر هنا السطر اللي تحطه في USERS"></textarea>
+        <button class="btn ghost block" id="gCopy" style="margin-top:8px">نسخ</button>
+        <div class="hint">الصق السطر في قايمة USERS جوه index.html (واستبدل سطر نفس المستخدم لو بتغيّر باسورده) وارفع الملف. للأدمن استخدم 12 حرف عشوائي على الأقل (زرار "عشوائي").</div>
+      </div>
     </section>
   </main>
 
@@ -482,65 +505,70 @@ const FIREBASE_CONFIG = {
 // tabs   = التابات اللي بتظهر للدور ده (scan = Home، qa = سؤال الحلقة)
 // manage = يضيف/يعدّل المخدومين والدروس
 // bonus  = يدّي بونص للمخدومين من تاب Students
-// fix    = يصحّح الدرجات (حضور/سؤال/بونص) من تاب Reports
+// fix    = يصحّح الدرجات (حضور/سؤال/بونص) من تاب Reports، ويعمل Reset للأجهزة
+// nobind = مش مربوط بجهاز واحد (باقي الأدوار بتتربط بأول موبايل بتدخل منه)
 // qa     = manage (يكتب السؤال ويبعته ويقيّم) | view (يشوف بس) | answer (يجاوب)
 const ROLES = {
-  1: { name: "Admin",         tabs: ["scan","students","report","data","qa","settings"], manage: true,  qa: "manage", bonus: true, fix: true },
+  1: { name: "Admin",         tabs: ["scan","students","report","data","qa","settings"], manage: true,  qa: "manage", bonus: true, fix: true, nobind: true },
   2: { name: "Family Leader", tabs: ["students","report","data","qa"],                   manage: true,  qa: "view"   },
   3: { name: "Servant",       tabs: ["scan","students","report","data","qa","settings"], manage: true,  qa: "manage", bonus: true },
   4: { name: "Student",       tabs: ["scan","report","data","qa"],                       manage: false, qa: "answer", student: true }
 };
 
-// المستخدمين: اسم المستخدم + كلمة السر + role
+// المستخدمين: اسم المستخدم + h (هاش كلمة السر، مش الباسورد نفسه) + role
+// الهاش بيتعمل من Settings ← "إضافة / تغيير مستخدم" (Role 1 بس). الباسورد مبيتخزنش في أي مكان.
 // الطالب (role 4) لازم له number = رقمه في تاب المخدومين (نفس رقم الـ QR)
 const USERS = [
-  { user: "Nassif Victor",  pass: "Nassif@321", role: 1 },
-  { user: "Mira Ehab",      pass: "QABDYhSW",   role: 3 },
-  { user: "Christine Alaa", pass: "JsD32tJq",   role: 3 },
-  { user: "Demiana Adel",   pass: "SRKStPTj",   role: 3 },
-  { user: "Madonna Amir",   pass: "RXRStPTq",   role: 3 },
-  { user: "Mario Nabil",    pass: "VgU9Kfs6",   role: 3 },
+  // Role 1 (Admin) — مش مربوط بجهاز
+  { user: "Nassif Victor", h: "7fcce9c1e91049f9db61394375d146e3c93e44fc1225772ece36b9cd2d0b12f0", role: 1 },
+
+  // Servants (role 3)
+  { user: "Mira Ehab", h: "116f4600fcc955f68e2c18565b60c68deb8fe11c7013e185fd496b006c18f3f1", role: 3 },
+  { user: "Christine Alaa", h: "187f89204de7c441c1c49228772f944f124551396774e55db2c44edf184c4df8", role: 3 },
+  { user: "Demiana Adel", h: "ec792e94eec8c02ce890542a2a911ba05496fbac79ca68a470fe155649137f70", role: 3 },
+  { user: "Madonna Amir", h: "9908eb1282621913aaee5460d498c94aa75e6cebff34055614f84d30f280883d", role: 3 },
+  { user: "Mario Nabil", h: "bbafe026f1d3364f1726e0624374ce80a412b4d12122c0409864bee9cbcb7ee9", role: 3 },
 
   // Family Leaders (role 2)
-  { user: "Micheal Mounir", pass: "yPd6D3CJ", role: 2 },
-  { user: "Marina Osama", pass: "HBrG8zqw", role: 2 },
-  { user: "Marina Habib", pass: "E3XX6PVd", role: 2 },
-  { user: "Michael Refaat", pass: "vRNKhruL", role: 2 },
-  { user: "Nancy George", pass: "PFtMujVv", role: 2 },
-  { user: "George Awad", pass: "sYhDYSHS", role: 2 },
+  { user: "Micheal Mounir", h: "69bc480073b4595184e89ea7ae136b0314aa2f733254e6028f534f01b433a65e", role: 2 },
+  { user: "Marina Osama", h: "72fdc5198e013a88280724a541612b41ec32de46461472d6afc0d0cd264aec99", role: 2 },
+  { user: "Marina Habib", h: "dfd87de018824e352c66ff4f554dbac578a34092d469a8ed5c0ecf2afe743721", role: 2 },
+  { user: "Michael Refaat", h: "a82a761eab1b0f8be9a8fece0334f61106558ff458fb96766ce5be8415a3d894", role: 2 },
+  { user: "Nancy George", h: "85918ad3012ae3c6327b3899aec87fc5933a62590f21425af3b671470c1f9c57", role: 2 },
+  { user: "George Awad", h: "198f61f7486a307dbe16aa83d08aa86c058cb1b391c2e48e3c81e667ab465deb", role: 2 },
 
   // Students (role 4) — number = رقمه في تاب Students (نفس رقم الـ QR)
-  { user: "Michael Bassem", pass: "cjak25", role: 4, number: "1" },
-  { user: "Abanoub Hany", pass: "qd9uz9", role: 4, number: "2" },
-  { user: "David Maher", pass: "3bnndk", role: 4, number: "3" },
-  { user: "George Bassily", pass: "9mf2rs", role: 4, number: "4" },
-  { user: "Mina Emad", pass: "9vyu6t", role: 4, number: "5" },
-  { user: "George Ossama", pass: "u374dp", role: 4, number: "6" },
-  { user: "Carol Hany", pass: "cvvw25", role: 4, number: "7" },
-  { user: "Marvy Gayed", pass: "yfcp98", role: 4, number: "8" },
-  { user: "Phebe Fayez", pass: "n69cnu", role: 4, number: "9" },
-  { user: "Maurin Magued", pass: "zds5vz", role: 4, number: "10" },
-  { user: "Erinie Milad", pass: "gfgx2m", role: 4, number: "11" },
-  { user: "Kermina Joseph", pass: "sa9agd", role: 4, number: "12" },
-  { user: "Erinie Elias", pass: "xmyvtg", role: 4, number: "13" },
-  { user: "Angelina Mina", pass: "333m5e", role: 4, number: "14" },
-  { user: "Kevin Joseph", pass: "gcs5t4", role: 4, number: "15" },
-  { user: "Mark Amgad", pass: "k4g9bv", role: 4, number: "16" },
-  { user: "Mario Hany", pass: "xcxy8z", role: 4, number: "17" },
-  { user: "Cecil Simon", pass: "dbnq58", role: 4, number: "18" },
-  { user: "Youssef Amgad", pass: "cf4ktp", role: 4, number: "19" },
-  { user: "Marina Wafik", pass: "xkssxd", role: 4, number: "20" },
-  { user: "George Magued", pass: "5cp7kz", role: 4, number: "21" },
-  { user: "Erinie Ashraf", pass: "qnhf7x", role: 4, number: "22" },
-  { user: "Elona Hany", pass: "yjd8mw", role: 4, number: "23" },
-  { user: "Joice Ayman", pass: "c8xhap", role: 4, number: "24" },
-  { user: "Joice Wissam", pass: "sbx53g", role: 4, number: "25" },
-  { user: "Jinne Adel", pass: "j5trq4", role: 4, number: "26" },
-  { user: "Christina Nagy", pass: "kv7wx6", role: 4, number: "27" },
-  { user: "Mariam Sherif", pass: "3k5p89", role: 4, number: "28" },
-  { user: "Malak Magdy", pass: "pvyyrr", role: 4, number: "29" },
-  { user: "Natalie Sameh", pass: "cw6ep9", role: 4, number: "30" },
-  { user: "Helen Armia", pass: "zx92jq", role: 4, number: "31" }
+  { user: "Michael Bassem", h: "acb3890dbccc41b6e4989432a281641b6646ec69e9042ccb05955d45d2f4d650", role: 4, number: "1" },
+  { user: "Abanoub Hany", h: "665b19eae86b87f23a7fccdad4bf3cc86704c7bbcf56fa3f1f25d1b25cab1c20", role: 4, number: "2" },
+  { user: "David Maher", h: "3f1ba62d2a876f9578107abed09513d952c3dead0ff87f34ca6674c445df2dff", role: 4, number: "3" },
+  { user: "George Bassily", h: "aa2da6790ee414e1f66ad98f3ca4458b484a5c68c3696b536e2a26c5965bc0e7", role: 4, number: "4" },
+  { user: "Mina Emad", h: "1c576b2aaeecfbc66a3723fd3fe48b3eed08ab4ab6c6135a1c3ddf0d8a893323", role: 4, number: "5" },
+  { user: "George Ossama", h: "1debe9f32a31262d3c6790e9eddb2291bb814fc41013a065c31d9bf826cd38e3", role: 4, number: "6" },
+  { user: "Carol Hany", h: "6e94a3195de65a2b6b409298b2ae1be7d0f78dc7151a35c3c48dcd6db7912b2d", role: 4, number: "7" },
+  { user: "Marvy Gayed", h: "ed663cfdebbb12a8b0cf6e76212cee8e06181cf451e91105e63fbf8c983b5f7c", role: 4, number: "8" },
+  { user: "Phebe Fayez", h: "cc8af9eb076a79b6c4a62831e46841bae225491ab7863debad7790123704cc87", role: 4, number: "9" },
+  { user: "Maurin Magued", h: "c1aba9ad2b5455352d2f5450252e27f204c52884b9b613ca1b88f41697eea48e", role: 4, number: "10" },
+  { user: "Erinie Milad", h: "2a4471e709df27f3e315ed45895b82ae1612acf730ab54652641434b6c9b34dc", role: 4, number: "11" },
+  { user: "Kermina Joseph", h: "3c0c0aad3b358e5198fd830cad39e46d9f26c07b21f178f60146ed5112294dba", role: 4, number: "12" },
+  { user: "Erinie Elias", h: "a7c3ed133398fdc1d0487f9735a39a35acbe7b1bf4228754256ebb644095be17", role: 4, number: "13" },
+  { user: "Angelina Mina", h: "e66161ab66a9167f5f1d11daeea5c4198f84193a74281e23ec844a0081232756", role: 4, number: "14" },
+  { user: "Kevin Joseph", h: "797ba93c20b3f7434f232c8cc3493330afa24f3bd294969cb384a03063ed18aa", role: 4, number: "15" },
+  { user: "Mark Amgad", h: "6e47425e62261fd6f6f46040d71554917d5a9e4071e66dc01aa2acafa88303ed", role: 4, number: "16" },
+  { user: "Mario Hany", h: "cc2959ae1c1ba621b642d4f1cd1a3a1ba3eff160c1424d7f55cd2d3361f7f3a9", role: 4, number: "17" },
+  { user: "Cecil Simon", h: "eae239e5de4a3975195ce3cf666a9c7017c258bc31ca2acac2b7553b55de07b3", role: 4, number: "18" },
+  { user: "Youssef Amgad", h: "ab4ad165866d4324c9356f057a52b39fff41c399c8ec256a1a3af95053f46a84", role: 4, number: "19" },
+  { user: "Marina Wafik", h: "6d76157ce44f5818d569e06f7993447fda0ccd5144eaeb27afc836f09bdafcbb", role: 4, number: "20" },
+  { user: "George Magued", h: "817b3a10205d6fc5e8cd802b6b8e2e5c8b0ac972a2b74478866168574a0f54ef", role: 4, number: "21" },
+  { user: "Erinie Ashraf", h: "30ca39ec492cc863c62dc02fb9e983126bc8c0b54b7cc7633a7cd664d86896a3", role: 4, number: "22" },
+  { user: "Elona Hany", h: "b10620dff1fa98d184f98def96d0563d3c99c6113a9c24f61e955990f3878253", role: 4, number: "23" },
+  { user: "Joice Ayman", h: "69079b360d9ff9626685ed0bcf4ec415f3e7d5cced5c486246ce6d4d181563f3", role: 4, number: "24" },
+  { user: "Joice Wissam", h: "83f9bdade010e63ff18092a20fccf9a1a173be768c860287cb3fbcf5f56dcef4", role: 4, number: "25" },
+  { user: "Jinne Adel", h: "836ea1d72a25042555303436ec78822f63cf97cc3744b9b96b0d8b4d016a55fd", role: 4, number: "26" },
+  { user: "Christina Nagy", h: "9a91e59ee5009e068a8deff2942f96b40c85e4435a7aace60271fa39f8085e2e", role: 4, number: "27" },
+  { user: "Mariam Sherif", h: "1845e0857aa4e1ad0e0255ef07614f76035502ed23ae50e946335ef5a84b78db", role: 4, number: "28" },
+  { user: "Malak Magdy", h: "21fbca765c864a3344827cb41760b58eb36d01fabfa9e67430c957da29f11597", role: 4, number: "29" },
+  { user: "Natalie Sameh", h: "b8df8eee6a0f29603e2f73b35c8479977362e8162137a371e282e929ce4a7eda", role: 4, number: "30" },
+  { user: "Helen Armia", h: "c30c23707238fc36d33c3195b3239887e70841ab3b9e2dd9cb8dd4d6a98184c8", role: 4, number: "31" }
 ];
 
 /*
@@ -600,6 +628,7 @@ let cur = null, sheetOpen = false;
 let lessons = {}, materials = [], openLesson = null, activeTab = "scan", R = null;
 let questions = {}, answers = [], qscores = [], openQ = null;
 let bonuses = [], bonusOpen = null, bonusDraft = "", bonusSign = 1;
+let devices = {}, devMem = null;
 
 document.querySelectorAll("[data-logo]").forEach(i => i.src = LOGO);
 (function(){ const l = document.createElement("link"); l.rel = "apple-touch-icon"; l.href = LOGO; document.head.appendChild(l); })();
@@ -607,9 +636,61 @@ document.querySelectorAll("[data-logo]").forEach(i => i.src = LOGO);
 /* =====================================================================
    4) البداية + تسجيل الدخول
    ===================================================================== */
-function findUser(name){
-  const n = String(name||"").trim().replace(/\s+/g," ").toLowerCase();
-  return USERS.find(x => x.user.replace(/\s+/g," ").toLowerCase() === n);
+/* ===== كلمة السر متشفّرة (PBKDF2) + ربط الحساب بجهاز واحد ===== */
+const PW_SALT = "stpaul-v1", PW_ITER = 150000;
+const normUser = s => String(s || "").trim().replace(/\s+/g, " ").toLowerCase();
+function findUser(name){ const n = normUser(name); return USERS.find(x => normUser(x.user) === n); }
+async function hashPw(user, pw){
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({name:"PBKDF2", hash:"SHA-256", salt: enc.encode(PW_SALT + "|" + normUser(user)), iterations: PW_ITER}, key, 256);
+  return [...new Uint8Array(bits)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+const checkPw = async (u, pw) => { try{ return !!u.h && (await hashPw(u.user, pw)) === u.h; }catch(e){ return false; } };
+
+// كود الجهاز: عشوائي وبيتخزن جوه الموبايل (التطبيق المنزّل بتاع الشاشة الرئيسية ليه تخزين لوحده)
+function devId(){
+  let v = null; try{ v = localStorage.getItem("sp_dev"); }catch(e){}
+  if(!v){
+    const b = new Uint8Array(16); crypto.getRandomValues(b); v = [...b].map(x => x.toString(16).padStart(2, "0")).join("");
+    try{ localStorage.setItem("sp_dev", v); }catch(e){ v = devMem = devMem || v; }
+  }
+  return v;
+}
+const devDocId = name => "u_" + normUser(name).replace(/[^a-z0-9\u0600-\u06FF]+/g, "_");
+function devInfo(){
+  const ua = navigator.userAgent || "";
+  const os = /iPhone|iPad|iPod/.test(ua) ? "iPhone/iPad" : /Android/.test(ua) ? "Android" : /Windows/.test(ua) ? "Windows" : /Mac/.test(ua) ? "Mac" : "جهاز";
+  const app = (navigator.standalone || (window.matchMedia && matchMedia("(display-mode: standalone)").matches)) ? "تطبيق" : "متصفح";
+  return os + " · " + app;
+}
+async function checkDevice(u){
+  const ref = db.doc("devices/" + devDocId(u.user)), me = devId();
+  try{
+    return await db.runTransaction(async tx => {
+      const d = await tx.get(ref);
+      if(!d.exists){ tx.set(ref, {user: u.user, deviceId: me, boundAt: firebase.firestore.FieldValue.serverTimestamp(), info: devInfo()}); return "ok"; }
+      return d.data().deviceId === me ? "ok" : "other";
+    });
+  }catch(e){ return "error"; }
+}
+async function tryEnter(u){
+  const role = ROLES[u.role];
+  if(role && !role.nobind){
+    const r = await checkDevice(u);
+    if(r !== "ok"){
+      try{ localStorage.removeItem("sp_user"); }catch(e){}
+      showLogin();
+      $("#lErr").textContent = r === "other" ? "الحساب ده مربوط بموبايل تاني. اطلب من الأدمن يعمل Reset." : "معرفتش أتأكد من الجهاز. اتأكد من النت وجرب تاني.";
+      return;
+    }
+  }
+  try{ localStorage.setItem("sp_user", u.user); }catch(e){}
+  enter(u);
+}
+function forceLogout(msg){
+  stopScan(); try{ localStorage.removeItem("sp_user"); }catch(e){}
+  showLogin(); $("#lErr").textContent = msg;
 }
 function showLogin(){
   unsubs.forEach(f => f()); unsubs = []; user = null; isAdmin = false; openLesson = null; openQ = null; bonusOpen = null; R = null;
@@ -625,6 +706,7 @@ function enter(u){
   $("#login").classList.add("hidden"); $("#app").classList.remove("hidden");
   $$(".admin-only").forEach(e => e.classList.toggle("hidden", !isAdmin));
   $$(".staff-only").forEach(e => e.classList.toggle("hidden", !!R.student));
+  $$(".fix-only").forEach(e => e.classList.toggle("hidden", !R.fix));
   $$("nav.bar button").forEach(b => b.classList.toggle("hidden", !R.tabs.includes(b.dataset.tab)));
   $("#staffHome").classList.toggle("hidden", !!R.student);
   $("#studentHome").classList.toggle("hidden", !R.student);
@@ -640,15 +722,20 @@ if(!FIREBASE_CONFIG.apiKey){
   db = firebase.firestore();
   let saved = null; try{ saved = localStorage.getItem("sp_user"); }catch(e){}
   const u0 = findUser(saved);
-  if(u0) enter(u0); else showLogin();
+  // بنأجّل الدخول التلقائي لحد ما السكريبت كله يتحمّل (عشان كل الدوال والثوابت تبقى جاهزة)
+  if(u0) setTimeout(() => tryEnter(u0), 0); else showLogin();
 }
 
-$("#loginForm").addEventListener("submit", e => {
-  e.preventDefault(); $("#lErr").textContent = "";
-  const u = findUser($("#lEmail").value);
-  if(!u || u.pass !== $("#lPass").value){ $("#lErr").textContent = "اسم المستخدم أو كلمة السر غلط"; return; }
-  try{ localStorage.setItem("sp_user", u.user); }catch(e){}
-  $("#lPass").value = ""; enter(u);
+$("#loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const err = $("#lErr"), btn = e.target.querySelector("button[type=submit]"); err.textContent = "";
+  if(!(window.crypto && crypto.subtle)){ err.textContent = "لازم تفتح التطبيق من الرابط (https) عشان تسجل دخول"; return; }
+  const u = findUser($("#lEmail").value), pw = $("#lPass").value;
+  btn.disabled = true;
+  try{
+    if(!u || !(await checkPw(u, pw))){ err.textContent = "اسم المستخدم أو كلمة السر غلط"; return; }
+    $("#lPass").value = ""; await tryEnter(u);
+  }finally{ btn.disabled = false; }
 });
 $("#logout").onclick = () => { stopScan(); try{ localStorage.removeItem("sp_user"); }catch(e){} showLogin(); };
 
@@ -683,6 +770,12 @@ function startApp(){
   unsubs.push(db.collection("lessons").onSnapshot(s => {
     lessons = {}; s.forEach(d => lessons[d.id] = {id:d.id, ...d.data()}); renderData();
   }, err => toast("مشكلة في قراءة الدروس: " + err.code, true)));
+  if(!R.nobind) unsubs.push(db.doc("devices/" + devDocId(user.email)).onSnapshot(d => {
+    if(d.exists && d.data().deviceId !== devId()) forceLogout("الحساب اتربط بموبايل تاني. اطلب من الأدمن يعمل Reset.");
+  }));
+  if(R.fix) unsubs.push(db.collection("devices").onSnapshot(s => {
+    devices = {}; s.forEach(d => devices[d.id] = d.data()); renderDevices();
+  }, err => toast("مشكلة في قراءة الأجهزة: " + err.code, true)));
   unsubs.push(db.collection("materials").onSnapshot(s => {
     materials = []; s.forEach(d => materials.push({id:d.id, ...d.data()})); renderData();
   }, err => toast("مشكلة في قراءة الملفات: " + err.code, true)));
@@ -1777,6 +1870,53 @@ function fixBonus(id, N){
     setTimeout(() => fixOpen(N), 0);
   };
 }
+
+/* =====================================================================
+   12) الأجهزة المربوطة + مولّد الهاش (Role 1 بس)
+   ===================================================================== */
+function devLabel(d){
+  if(!d) return "مش مربوط";
+  const ts = d.boundAt && d.boundAt.seconds ? new Date(d.boundAt.seconds * 1000) : null;
+  return "مربوط · " + (d.info || "جهاز") + (ts ? " · " + ymd(ts) : "");
+}
+function renderDevices(){
+  const box = $("#devList"); if(!box || !R || !R.fix) return;
+  const q = $("#devSearch").value.trim().toLowerCase();
+  const all = USERS.filter(u => ROLES[u.role] && !ROLES[u.role].nobind).sort((a,b) => a.role - b.role || a.user.localeCompare(b.user));
+  $("#devCount").textContent = `(${all.filter(u => devices[devDocId(u.user)]).length} من ${all.length} مربوط)`;
+  const list = all.filter(u => !q || u.user.toLowerCase().includes(q));
+  box.innerHTML = list.length ? list.map(u => { const id = devDocId(u.user), d = devices[id];
+    return `<div class="fxrow"><div class="t"><b>${esc(u.user)}</b><small>${esc(ROLES[u.role].name)} — ${esc(devLabel(d))}</small></div>${d ? `<button class="btn sm danger" data-devreset="${esc(id)}" data-n="${esc(u.user)}">Reset</button>` : ""}</div>`; }).join("") : `<div class="empty">مفيش نتيجة.</div>`;
+  $$("#devList [data-devreset]").forEach(b => b.onclick = async () => {
+    if(!confirm("تعمل Reset لجهاز " + b.dataset.n + "؟ أول موبايل هيدخل بعد كده هيتربط.")) return;
+    try{ await db.doc("devices/" + b.dataset.devreset).delete(); toast("اتعمل Reset — خلّيه يدخل من موبايله الجديد"); }
+    catch(e){ toast("معرفتش أعمل Reset: " + e.code, true); }
+  });
+}
+$("#devSearch").oninput = renderDevices;
+
+function genPw(len){
+  const A = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789", b = new Uint32Array(len); crypto.getRandomValues(b);
+  return [...b].map(x => A[x % A.length]).join("");
+}
+$("#gRand").onclick = () => { $("#gPass").value = genPw(12); };
+$("#gRole").onchange = () => $("#gNumBox").classList.toggle("hidden", $("#gRole").value !== "4");
+$("#gMake").onclick = async () => {
+  const name = $("#gUser").value.trim().replace(/\s+/g, " "), pw = $("#gPass").value, role = +$("#gRole").value, num = $("#gNum").value.trim();
+  if(!name || /["\\]/.test(name)){ toast("اكتب اسم مستخدم صحيح (من غير علامات تنصيص)", true); return; }
+  if(pw.length < 6){ toast("كلمة السر لازم تبقى 6 حروف على الأقل", true); return; }
+  if(role === 4 && !/^[A-Za-z0-9\u0600-\u06FF-]+$/.test(num)){ toast("اكتب رقم الطالب", true); return; }
+  if(!(window.crypto && crypto.subtle)){ toast("لازم تفتح التطبيق من الرابط (https)", true); return; }
+  $("#gMake").disabled = true;
+  try{
+    const h = await hashPw(name, pw);
+    $("#gOut").value = `  { user: "${name}", h: "${h}", role: ${role}${role === 4 ? `, number: "${num}"` : ""} },`;
+  }finally{ $("#gMake").disabled = false; }
+};
+$("#gCopy").onclick = async () => {
+  const v = $("#gOut").value; if(!v) return;
+  try{ await navigator.clipboard.writeText(v); toast("اتنسخ"); }catch(e){ $("#gOut").select(); toast("حدّد النص وانسخه"); }
+};
 </script>
 </body>
 </html>
